@@ -108,7 +108,7 @@ const Tablehistorique = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }}
+                }}  sx={{m:3}}
             />
             <Table>
                 <TableHead>

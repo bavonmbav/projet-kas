@@ -81,7 +81,7 @@ const ProduitsTable = ({ produits }) => {
             />
             <Table>
                 <TableHead>
-                    <TableRow sx={{ bgcolor: 'text.secondary' }}>
+                    <TableRow>
                         <TableCell >ID Produit</TableCell>
                         <TableCell>
                             <IconButton onClick={() => handleSort('designation')}>

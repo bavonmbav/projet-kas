@@ -29,22 +29,18 @@ const Addmedicament = () => {
 
 
     return(
-        <Box 
-      
-        
-        sx={{ alignContent: 'center' ,}}>
                 
-<form onSubmit={handleSubmit}>
-        <Box
-        sx={{
-            display: 'grid',
-            columnGap: 3,
-            rowGap: 1,
-            gridTemplateColumns: 'repeat(2, 1fr)',
-        }}
-        >
-            <Grid container  spacing={{ xs: 1, md: 2 }} columns={{ xs: 4, sm: 5, md: 15 }}>
-                <Grid item xs={2} md={4}>
+    <form onSubmit={handleSubmit}>
+       <Box
+                     
+                >
+            <Grid container  spacing={2} sx={{
+                            display: 'grid',
+                            columnGap: 3,
+                            rowGap: 3,
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                        }}>
+                <Grid item>
                     <TextField
                         fullWidth
                         name="prixChat"
@@ -53,7 +49,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={2} md={4}>
+                <Grid item >
                     <TextField
                         fullWidth
                         name="idProduit"
@@ -62,7 +58,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={2} md={4}>
+                <Grid item >
                     <TextField
                         fullWidth
                         name="designation"
@@ -71,7 +67,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item  sx={6}>
                     <TextField
                         fullWidth
                         name="prixVente"
@@ -80,7 +76,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item >
                     <TextField
                         fullWidth
                         name="stockMini"
@@ -89,7 +85,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item sx={6} >
                     <TextField
                         fullWidth
                         name="dateExpiration"
@@ -99,7 +95,7 @@ const Addmedicament = () => {
                         onChange={handleInputChange}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item sx={6} md={8}>
                     <FormControl fullWidth>
                         <InputLabel id="idFournisseurLabel">ID Fournisseur</InputLabel>
                         <Select
@@ -118,8 +114,7 @@ const Addmedicament = () => {
                 </Grid>
             </Grid>
             </Box>
-        </form>
-        </Box>         
+        </form>        
                         
     )
 }

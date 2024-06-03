@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import {ShoppingCart } from '@mui/icons-material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { orderBy } from 'lodash';
 
-const TablefactureAbonner = ({ produits }) => {
+const Tablefacture = ({ produits }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [orderByField, setOrderByField] = useState('');
@@ -32,15 +30,15 @@ const TablefactureAbonner = ({ produits }) => {
 
     // Mock data for testing
     const mockProduits = [
-        { id: 1, nom: 'walter', montantpayer: 5000, montantavance: 2500, resteapayer:20,numerofacture: '002-04-2024',date: '02-04-2024'},
-        { id: 2, nom: 'walter', montantpayer: 10000, montantavance: 4000, resteapayer:20,numerofacture: '003-04-2024', date: '02-04-2024' },
-        { id: 3, nom: 'walter', montantpayer: 5000, montantavance: 1500, resteapayer:20,numerofacture: '004-04-2024', date: '02-04-2024' },
-        { id: 4, nom: 'walter', montantpayer: 20000, montantavance: 5, resteapayer:20,numerofacture: '005-04-2024',date: '02-04-2024'  },
-        { id: 5, nom: 'walter', montantpayer: 30000, montantavance: 0,resteapayer:20, numerofacture: '006-04-2024', date: '02-04-2024' },
+        { id: 1, montant: 2500, nom: "gabriel", avance: 2500, datefacture: '002-04-2024',dateEcheance: '006-04-2024', },
+        { id: 2, montant: 6000, nom: "gabriel", avance: 4000, datefacture: '003-04-2024', dateEcheance: '006-04-2024',  },
+        { id: 3, montant: 3500, nom: "gabriel", avance: 1500, datefacture: '004-04-2024', dateEcheance: '006-04-2024',  },
+        { id: 4, montant: 15000, nom: "gabriel", avance: 5, datefacture: '005-04-2024', dateEcheance: '006-04-2024',  },
+        { id: 5, montant: 30000, nom: "gabriel", avance: 0, datefacture: '006-04-2024', dateEcheance: '006-04-2024',  },
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
-        produit.nom.toLowerCase().includes(searchTerm.toLowerCase())
+        produit.dateEcheance.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
     
 
@@ -72,7 +70,7 @@ const TablefactureAbonner = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }} sx={{m:3}}
+                }}
             />
             <Table>
                 <TableHead>
@@ -80,17 +78,16 @@ const TablefactureAbonner = ({ produits }) => {
                         <TableCell>ID</TableCell>
                         <TableCell>
                             <IconButton onClick={() => handleSort('nom')}>
-                            Nom
+                            NOM
                                 {orderByField === 'nom' && (
                                     order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
                                 )}
                             </IconButton>
                         </TableCell>
-                        <TableCell>Montant a payer</TableCell>
-                        <TableCell>Montant avancer</TableCell>
-                        <TableCell>Rest a payer</TableCell>
-                        <TableCell>numero facture</TableCell>
-                        <TableCell>Date</TableCell>
+                        <TableCell>Montant</TableCell>
+                        <TableCell>Avance</TableCell>
+                        <TableCell>date de facturation</TableCell>
+                        <TableCell>date d'echeance</TableCell>
                         <TableCell>Action</TableCell>
                     </TableRow>
                 </TableHead>
@@ -99,24 +96,14 @@ const TablefactureAbonner = ({ produits }) => {
                         <TableRow key={produit.id}>
                             <TableCell>{produit.id}</TableCell>
                             <TableCell>{produit.nom}</TableCell>
-                            <TableCell>{produit.montantpayer}</TableCell>
-                            <TableCell>{produit.montantavance}</TableCell>
-                            <TableCell>{produit.resteapayer}</TableCell>
-                            <TableCell>{produit.numerofacture}</TableCell>
-                            <TableCell>{produit.date}</TableCell>
+                            <TableCell>{produit.montant}</TableCell>
+                            <TableCell>{produit.avance}</TableCell>
+                            <TableCell>{produit.datefacture}</TableCell>
+                            <TableCell>{produit.dateEcheance}</TableCell>
                             <TableCell>
-                                <IconButton aria-label="Print" color="primary">
+                                <IconButton aria-label="Print">
                                     <PrintIcon />
                                 </IconButton>
-                                <IconButton aria-label="VisibilityIcon" color="warning">
-                                    <VisibilityIcon />
-                                </IconButton>
-                                <IconButton aria-label="addAlert" color="secondary">
-                                <ShoppingCart/>
-                                </IconButton>
-
-                               
-                                
                             </TableCell>
                         </TableRow>
                     ))}
@@ -135,4 +122,4 @@ const TablefactureAbonner = ({ produits }) => {
     );
 };
 
-export default TablefactureAbonner;
+export default Tablefacture;

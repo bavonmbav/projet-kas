@@ -19,7 +19,7 @@ const Menuproduit = () => {
                 <ListItem>
                 <ListItemButton>
                     <ListItemContent>
-                        <NavLink to={"/Addmedicament"}  style={styles.list}>Ajouter</NavLink>
+                        <NavLink to={"/Addmedicament"}  style={styles.list}>Add-produit</NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>

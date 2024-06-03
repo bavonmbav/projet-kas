@@ -2,7 +2,7 @@ import React from "react";
 
 
 import { useState } from 'react';
-import { TextField, Button, Grid } from '@mui/material';
+import { TextField, Button, Grid, Box } from '@mui/material';
 
 
 const Reapprovision = () => {
@@ -27,12 +27,22 @@ const Reapprovision = () => {
     return(
                 
 <form onSubmit={handleSubmit}>
+            <Box
+                sx={{
+                    display: 'grid',
+                    columnGap: 3,
+                    textAlign: 'center',
+                    rowGap: 3,
+                    gridTemplateColumns: 'repeat(2, 1fr)',
+                    marginTop:4
+                }}
+        >
             <Grid container spacing={3}>
                 <Grid item xs={6}>
                     <TextField
                         fullWidth
-                        name="nom"
-                        label="Nom ou société"
+                        name="ID"
+                        label="ID"
                         value={formState.ID}
                         onChange={handleInputChange}
                     />
@@ -40,8 +50,8 @@ const Reapprovision = () => {
                 <Grid item xs={6}>
                     <TextField
                         fullWidth
-                        name="address"
-                        label="address"
+                        name="Designation"
+                        label="Designation"
                         value={formState.Designation}
                         onChange={handleInputChange}
                     />
@@ -49,8 +59,8 @@ const Reapprovision = () => {
                 <Grid item xs={6}>
                     <TextField
                         fullWidth
-                        name="contact"
-                        label="Contact"
+                        name="Quantity"
+                        label="Quantity"
                         value={formState.Quantity}
                         onChange={handleInputChange}
                     />
@@ -59,6 +69,7 @@ const Reapprovision = () => {
                     <Button type="submit" variant="contained" color="primary">Soumettre</Button>
                 </Grid>
             </Grid>
+            </Box>
         </form>
                 
                         

@@ -20,14 +20,14 @@ const MenuFournisseur = () => {
                 <ListItem>
                 <ListItemButton>
                     <ListItemContent>
-                        <NavLink to={"/Fournisseur"} style={styles.list}>Ajouter </NavLink>
+                        <NavLink to={"/Fournisseur"} style={styles.list}>Add-fournisseur </NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>
                 <ListItem>
                 <ListItemButton>
                     <ListItemContent>
-                    <NavLink to={"/Facturefournisseur"} style={styles.list}>Facture</NavLink>
+                    <NavLink to={"/Facturefournisseur"} style={styles.list}>Add-Facture</NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>
@@ -35,6 +35,13 @@ const MenuFournisseur = () => {
                 <ListItemButton>
                     <ListItemContent>
                     <NavLink to={"/TableFournisseur"} style={styles.list}>Table</NavLink>
+                    </ListItemContent>
+                </ListItemButton>
+                </ListItem>
+                <ListItem>
+                <ListItemButton>
+                    <ListItemContent>
+                    <NavLink to={"/Tablefacture"} style={styles.list}>Facture F</NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>

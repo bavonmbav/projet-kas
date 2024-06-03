@@ -19,21 +19,14 @@ const MenuFacture = () => {
                 <ListItem>
                 <ListItemButton>
                     <ListItemContent>
-                        <NavLink to={"/Tablefactureclient"} style={styles.list}>Ajouter </NavLink>
+                        <NavLink to={"/Tablefactureclient"} style={styles.list}>Facture-Standard</NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>
                 <ListItem>
                 <ListItemButton>
                     <ListItemContent>
-                    <NavLink to={"/TablefactureAbonner"} style={styles.list}>Facture</NavLink>
-                    </ListItemContent>
-                </ListItemButton>
-                </ListItem>
-                <ListItem>
-                <ListItemButton>
-                    <ListItemContent>
-                    <NavLink to={"/TableFournisseur"} style={styles.list}>Table</NavLink>
+                    <NavLink to={"/TablefactureAbonner"} style={styles.list}>Facture-Abonner</NavLink>
                     </ListItemContent>
                 </ListItemButton>
                 </ListItem>
