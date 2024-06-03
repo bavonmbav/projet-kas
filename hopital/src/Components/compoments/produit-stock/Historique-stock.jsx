@@ -17,7 +17,7 @@ const Tablehistorique = ({ produits }) => {
     const [editProduct, setEditProduct] = useState(null); // Ajoutez cette ligne pour définir l'état editProduct
     const [open, setOpen] = useState(false);
 
-   
+
 
 
     const handleSort = (field) => {
@@ -55,8 +55,8 @@ const Tablehistorique = ({ produits }) => {
         handleClose();
     };
 
-     // Fonction pour gérer les modifications de champ
-     const handleChange = (event) => {
+    // Fonction pour gérer les modifications de champ
+    const handleChange = (event) => {
         const { name, value } = event.target;
         setEditProduct({ ...editProduct, [name]: value });
     };
@@ -65,19 +65,19 @@ const Tablehistorique = ({ produits }) => {
     const mockProduits = [
         { id: 1, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10 },
         { id: 2, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
-        { id: 3, designation: 'Produit C', stock: 15, stockMini: 8, prixAchat: 12,  },
+        { id: 3, designation: 'Produit C', stock: 15, stockMini: 8, prixAchat: 12, },
         { id: 4, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8, },
         { id: 5, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10, },
-        { id: 6, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15,  },
+        { id: 6, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
         { id: 7, designation: 'Produit C', stock: 15, stockMini: 8, prixAchat: 12, },
-        { id: 8, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8,  },
-        { id: 9, designation: 'Produit E', stock: 25, stockMini: 12, prixAchat: 18,}
+        { id: 8, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8, },
+        { id: 9, designation: 'Produit E', stock: 25, stockMini: 12, prixAchat: 18, }
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.designation.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -94,102 +94,102 @@ const Tablehistorique = ({ produits }) => {
 
     return (
         <div>
-        <TableContainer component={Paper}>
-            <TextField
-                variant="outlined"
-                label="Rechercher"
-                value={searchTerm}
-                onChange={handleSearch}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton>
-                                <SearchIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    ),
-                }}  sx={{m:3}}
-            />
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID Produit</TableCell>
-                        <TableCell>
-                            <IconButton onClick={() => handleSort('designation')}>
-                                Désignation
-                                {orderByField === 'designation' && (
-                                    order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
-                                )}
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>stockage</TableCell>
-                        <TableCell>Stock Mini</TableCell>
-                        <TableCell>Prix d'Achat</TableCell>
-                        <TableCell>Commander</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((produit) => (
-                        <TableRow key={produit.id}>
-                            <TableCell>{produit.id}</TableCell>
-                            <TableCell>{produit.designation}</TableCell>
-                            <TableCell>{produit.stock}</TableCell>
-                            <TableCell>{produit.stockMini}</TableCell>
-                            <TableCell>{produit.prixAchat}</TableCell>
+            <TableContainer component={Paper}>
+                <TextField
+                    variant="outlined"
+                    label="Rechercher"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton>
+                                    <SearchIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }} sx={{ m: 3 }}
+                />
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID Produit</TableCell>
                             <TableCell>
-                                <IconButton aria-label="commande" onClick={() => handleEdit(produit)} color="primary">
-                                    <BusAlert />
+                                <IconButton onClick={() => handleSort('designation')}>
+                                    Désignation
+                                    {orderByField === 'designation' && (
+                                        order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
+                                    )}
                                 </IconButton>
                             </TableCell>
+                            <TableCell>stockage</TableCell>
+                            <TableCell>Stock Mini</TableCell>
+                            <TableCell>Prix d'Achat</TableCell>
+                            <TableCell>Commander</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={produits ? produits.length : mockProduits.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((produit) => (
+                            <TableRow key={produit.id}>
+                                <TableCell>{produit.id}</TableCell>
+                                <TableCell>{produit.designation}</TableCell>
+                                <TableCell>{produit.stock}</TableCell>
+                                <TableCell>{produit.stockMini}</TableCell>
+                                <TableCell>{produit.prixAchat}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="commande" onClick={() => handleEdit(produit)} color="primary">
+                                        <BusAlert />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={produits ? produits.length : mockProduits.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
 
-        {editProduct && (
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Commander</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="dense"
-                        label="Désignation"
-                        name="designation"
-                        value={editProduct.designation}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Quantité"
-                        name="quantity"
-                        value={editProduct.quantity}
-                        onChange={handleChange}
-                        fullWidth
-                    />
-                   
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="warning">
-                        Annuler
-                    </Button>
-                    <Button onClick={handleSave} color="success">
-                        Sauvegarder
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )}
+            {editProduct && (
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Commander</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            margin="dense"
+                            label="Désignation"
+                            name="designation"
+                            value={editProduct.designation}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Quantité"
+                            name="quantity"
+                            value={editProduct.quantity}
+                            onChange={handleChange}
+                            fullWidth
+                        />
 
-    </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="warning">
+                            Annuler
+                        </Button>
+                        <Button onClick={handleSave} color="success">
+                            Sauvegarder
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+
+        </div>
     );
 };
 

@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import {ShoppingCart } from '@mui/icons-material';
+import { ShoppingCart } from '@mui/icons-material';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -32,17 +32,17 @@ const TablefactureAbonner = ({ produits }) => {
 
     // Mock data for testing
     const mockProduits = [
-        { id: 1, nom: 'walter', montantpayer: 5000, montantavance: 2500, resteapayer:20,numerofacture: '002-04-2024',date: '02-04-2024'},
-        { id: 2, nom: 'walter', montantpayer: 10000, montantavance: 4000, resteapayer:20,numerofacture: '003-04-2024', date: '02-04-2024' },
-        { id: 3, nom: 'walter', montantpayer: 5000, montantavance: 1500, resteapayer:20,numerofacture: '004-04-2024', date: '02-04-2024' },
-        { id: 4, nom: 'walter', montantpayer: 20000, montantavance: 5, resteapayer:20,numerofacture: '005-04-2024',date: '02-04-2024'  },
-        { id: 5, nom: 'walter', montantpayer: 30000, montantavance: 0,resteapayer:20, numerofacture: '006-04-2024', date: '02-04-2024' },
+        { id: 1, nom: 'walter', montantpayer: 5000, montantavance: 2500, resteapayer: 20, numerofacture: '002-04-2024', date: '02-04-2024' },
+        { id: 2, nom: 'walter', montantpayer: 10000, montantavance: 4000, resteapayer: 20, numerofacture: '003-04-2024', date: '02-04-2024' },
+        { id: 3, nom: 'walter', montantpayer: 5000, montantavance: 1500, resteapayer: 20, numerofacture: '004-04-2024', date: '02-04-2024' },
+        { id: 4, nom: 'walter', montantpayer: 20000, montantavance: 5, resteapayer: 20, numerofacture: '005-04-2024', date: '02-04-2024' },
+        { id: 5, nom: 'walter', montantpayer: 30000, montantavance: 0, resteapayer: 20, numerofacture: '006-04-2024', date: '02-04-2024' },
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.nom.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -72,7 +72,7 @@ const TablefactureAbonner = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }} sx={{m:3}}
+                }} sx={{ m: 3 }}
             />
             <Table>
                 <TableHead>
@@ -80,7 +80,7 @@ const TablefactureAbonner = ({ produits }) => {
                         <TableCell>ID</TableCell>
                         <TableCell>
                             <IconButton onClick={() => handleSort('nom')}>
-                            Nom
+                                Nom
                                 {orderByField === 'nom' && (
                                     order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
                                 )}
@@ -112,11 +112,11 @@ const TablefactureAbonner = ({ produits }) => {
                                     <VisibilityIcon />
                                 </IconButton>
                                 <IconButton aria-label="addAlert" color="secondary">
-                                <ShoppingCart/>
+                                    <ShoppingCart />
                                 </IconButton>
 
-                               
-                                
+
+
                             </TableCell>
                         </TableRow>
                     ))}

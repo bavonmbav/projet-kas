@@ -1,6 +1,6 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, TextField, Button, Grid, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, Grid, Snackbar, Alert, Typography } from '@mui/material';
 
 const Fournisseur = () => {
     const [formState, setFormState] = useState({
@@ -17,7 +17,7 @@ const Fournisseur = () => {
     });
 
     const [errors, setErrors] = useState({});
-    
+
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -84,61 +84,68 @@ const Fournisseur = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-            <Box
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer un fournisseur</Typography>
+
+            <Grid container spacing={-1}>
+                <form onSubmit={handleSubmit}>
+                    <Box
                         sx={{
                             display: 'grid',
                             columnGap: 3,
                             textAlign: 'center',
                             rowGap: 3,
                             gridTemplateColumns: 'repeat(2, 1fr)',
-                            marginTop:4
+                            marginTop: 2,
+                            borderRadius: 2,
+                            p: 2,
+                            borderColor: 'primary.main',
+                            backgroundColor: 'rgb(255 255 255)'
                         }}
-                        >
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            name="nom"
-                            label="Nom ou société"
-                            value={formState.nom}
-                            onChange={handleInputChange}
-                            error={!!errors.nom}
-                            helperText={errors.nom}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            name="adresse"
-                            label="Adresse"
-                            value={formState.adresse}
-                            onChange={handleInputChange}
-                            error={!!errors.adresse}
-                            helperText={errors.adresse}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            name="telephone"
-                            label="Contact"
-                            value={formState.telephone}
-                            onChange={handleInputChange}
-                            error={!!errors.telephone}
-                            helperText={errors.telephone}
-                            required
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                    </Grid>
-                </Grid>
-                </Box>
-            </form>
+                    >
 
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="nom"
+                                label="Nom ou société"
+                                value={formState.nom}
+                                onChange={handleInputChange}
+                                error={!!errors.nom}
+                                helperText={errors.nom}
+                                required
+                            />
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="adresse"
+                                label="Adresse"
+                                value={formState.adresse}
+                                onChange={handleInputChange}
+                                error={!!errors.adresse}
+                                helperText={errors.adresse}
+                                required
+                            />
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="telephone"
+                                label="Contact"
+                                value={formState.telephone}
+                                onChange={handleInputChange}
+                                error={!!errors.telephone}
+                                helperText={errors.telephone}
+                                required
+                            />
+                        </Grid>
+                        <Grid item >
+                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
+                        </Grid>
+
+                    </Box>
+                </form>
+            </Grid>
             <Snackbar
                 open={alertState.open}
                 autoHideDuration={6000}

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
-import { useState,useEffect } from 'react';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, ListItem,Snackbar, Alert } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, ListItem, Snackbar, Alert, Typography, Box } from '@mui/material';
 
 
 const Facturefournisseur = () => {
@@ -40,11 +40,11 @@ const Facturefournisseur = () => {
                 message: 'facture ajouté avec succès!',
             });
             setFormState({
-                    idFournisseur: '',
-                    montant: '',
-                    avance: '',
-                    dateFacture: '',
-                    dateEcheance: '',
+                idFournisseur: '',
+                montant: '',
+                avance: '',
+                dateFacture: '',
+                dateEcheance: '',
             });
         } catch (error) {
             setAlertState({
@@ -71,82 +71,100 @@ const Facturefournisseur = () => {
 
 
 
-    return(
+    return (
         <>
-                
-<form onSubmit={handleSubmit}>
-            
-            <Grid container spacing={4}>
-                <Grid item xs={4}>
-                    <TextField
-                        fullWidth
-                        name="montant"
-                        label="Montant Facture"
 
-                        value={formState.montant}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                <Grid item xs={4} md={2}>
-                                <FormControl fullWidth>
-                                    <InputLabel id="idFournisseurLabel">Fournisseur</InputLabel>
-                                    <Select
-                                        labelId="idFournisseurLabel"
-                                        name="idFournisseur"
-                                        value={formState.idFournisseur}
-                                        onChange={handleInputChange}
-                                    >
-                                        <MenuItem value="">Sélectionner</MenuItem>
-                                        {fournisseurs.map((fournisseur)=> ( 
-                                            
-                                            <MenuItem key={fournisseur.idFournisseur}>
-                                                <ListItem value={fournisseur.nom}></ListItem>
-                                            </MenuItem>)
-                                        )}
-                                        <MenuItem value="1">gabriel</MenuItem>
-                                      
-                                        {/* Ajoutez ici les options de sélection des fournisseurs */}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                <Grid item xs={4}>
-                    <TextField
-                        fullWidth
-                        name="avance"
-                        label="avance"
-                        
-                        value={formState.avance}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                <Grid item xs={4}>
-                    <TextField
-                        fullWidth
-                        name="dateFacture"
-                        label="date facturation"
-                        type="date"
-                        value={formState.dateFacture}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-   
-                <Grid item xs={4}>
-                    <TextField
-                        fullWidth
-                        name="dateEcheance"
-                        label="Date d'echeance"
-                        type="date"
-                        value={formState.dateEcheance}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                
-                <Grid item xs={12}>
-                    <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                </Grid>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer une facture fournisseur</Typography>
+
+            <Grid container spacing={-1}>
+                <form onSubmit={handleSubmit}>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            columnGap: 3,
+                            textAlign: 'center',
+                            rowGap: 3,
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            marginTop: 2,
+                            borderRadius: 2,
+                            p: 2,
+                            borderColor: 'primary.main',
+                            backgroundColor: 'rgb(255 255 255)'
+                        }}
+                    >
+
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="montant"
+                                label="Montant Facture"
+
+                                value={formState.montant}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item >
+                            <FormControl fullWidth>
+                                <InputLabel id="idFournisseurLabel">Fournisseur</InputLabel>
+                                <Select
+                                    labelId="idFournisseurLabel"
+                                    name="idFournisseur"
+                                    value={formState.idFournisseur}
+                                    onChange={handleInputChange}
+                                >
+                                    <MenuItem value="">Sélectionner</MenuItem>
+                                    {fournisseurs.map((fournisseur) => (
+
+                                        <MenuItem key={fournisseur.idFournisseur}>
+                                            <ListItem value={fournisseur.nom}></ListItem>
+                                        </MenuItem>)
+                                    )}
+                                    <MenuItem value="1">gabriel</MenuItem>
+
+                                    {/* Ajoutez ici les options de sélection des fournisseurs */}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="avance"
+                                label="avance"
+
+                                value={formState.avance}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="dateFacture"
+                                label="date facturation"
+                                type="date"
+                                value={formState.dateFacture}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="dateEcheance"
+                                label="Date d'echeance"
+                                type="date"
+                                value={formState.dateEcheance}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+
+                        <Grid item >
+                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
+                        </Grid>
+
+                    </Box>
+                </form>
             </Grid>
-        </form>
-        <Snackbar
+            <Snackbar
                 open={alertState.open}
                 autoHideDuration={6000}
                 onClose={handleClose}
@@ -154,8 +172,8 @@ const Facturefournisseur = () => {
                 <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
                     {alertState.message}
                 </Alert>
-            </Snackbar>      
-     </>                   
+            </Snackbar>
+        </>
     )
 }
 export default Facturefournisseur;

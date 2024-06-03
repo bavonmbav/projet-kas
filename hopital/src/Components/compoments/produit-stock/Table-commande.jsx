@@ -34,21 +34,21 @@ const Tablecommande = ({ produits }) => {
 
     // Mock data for testing
     const mockProduits = [
-        { id: 1, designation: 'Produit A', quantity: 10,fournisseur: 'Fournisseur A', dateExpiration: '2024-06-30' },
-        { id: 2, designation: 'Produit B', quantity: 20,fournisseur: 'Fournisseur B', dateExpiration: '2024-07-15' },
-        { id: 3, designation: 'Produit C', quantity: 15,fournisseur: 'Fournisseur C', dateExpiration: '2024-08-20' },
+        { id: 1, designation: 'Produit A', quantity: 10, fournisseur: 'Fournisseur A', dateExpiration: '2024-06-30' },
+        { id: 2, designation: 'Produit B', quantity: 20, fournisseur: 'Fournisseur B', dateExpiration: '2024-07-15' },
+        { id: 3, designation: 'Produit C', quantity: 15, fournisseur: 'Fournisseur C', dateExpiration: '2024-08-20' },
         { id: 4, designation: 'Produit D', quantity: 5, fournisseur: 'Fournisseur A', dateExpiration: '2024-07-10' },
-        { id: 5, designation: 'Produit A', quantity: 10,fournisseur: 'Fournisseur A', dateExpiration: '2024-06-30' },
-        { id: 6, designation: 'Produit B', quantity: 20,fournisseur: 'Fournisseur B', dateExpiration: '2024-07-15' },
-        { id: 7, designation: 'Produit C', quantity: 15,fournisseur: 'Fournisseur C', dateExpiration: '2024-08-20' },
-        { id: 8, designation: 'Produit D', quantity: 5,fournisseur: 'Fournisseur A', dateExpiration: '2024-07-10' },
-        { id: 9, designation: 'Produit E', quantity: 25,fournisseur: 'Fournisseur B', dateExpiration: '2024-09-05' }
+        { id: 5, designation: 'Produit A', quantity: 10, fournisseur: 'Fournisseur A', dateExpiration: '2024-06-30' },
+        { id: 6, designation: 'Produit B', quantity: 20, fournisseur: 'Fournisseur B', dateExpiration: '2024-07-15' },
+        { id: 7, designation: 'Produit C', quantity: 15, fournisseur: 'Fournisseur C', dateExpiration: '2024-08-20' },
+        { id: 8, designation: 'Produit D', quantity: 5, fournisseur: 'Fournisseur A', dateExpiration: '2024-07-10' },
+        { id: 9, designation: 'Produit E', quantity: 25, fournisseur: 'Fournisseur B', dateExpiration: '2024-09-05' }
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.designation.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -78,7 +78,7 @@ const Tablecommande = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }}  sx={{m:3}}
+                }} sx={{ m: 3 }}
             />
             <Table>
                 <TableHead>
@@ -93,7 +93,7 @@ const Tablecommande = ({ produits }) => {
                             </IconButton>
                         </TableCell>
                         <TableCell>quantity</TableCell>
-                       
+
                         <TableCell>Fournisseur</TableCell>
                         <TableCell>Date commande</TableCell>
                         <TableCell>Action</TableCell>
@@ -105,33 +105,33 @@ const Tablecommande = ({ produits }) => {
                             <TableCell>{produit.id}</TableCell>
                             <TableCell>{produit.designation}</TableCell>
                             <TableCell>{produit.quantity}</TableCell>
-                            
+
                             <TableCell>{produit.fournisseur}</TableCell>
                             <TableCell>{produit.dateExpiration}</TableCell>
                             <TableCell>
-                                    
-                                        <ReactToPrint
-                                            trigger={() => (
-                                                <Tooltip title="Print">
-                                                <IconButton aria-label="Print" color="info">
-                                                    <PrintIcon />
-                                                </IconButton>
-                                                </Tooltip> 
-                                            )}
-                                            content={() => this.componentRef}
-                                        />
-                                   
-                                 <Tooltip title="Edit">   
+
+                                <ReactToPrint
+                                    trigger={() => (
+                                        <Tooltip title="Print">
+                                            <IconButton aria-label="Print" color="info">
+                                                <PrintIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+                                    content={() => this.componentRef}
+                                />
+
+                                <Tooltip title="Edit">
                                     <IconButton aria-label="Edit" color="success">
                                         <EditIcon />
                                     </IconButton>
-                                </Tooltip> 
+                                </Tooltip>
 
                                 <Tooltip title="Delete">
                                     <IconButton aria-label="Delete" color="error">
                                         <DeleteIcon />
                                     </IconButton>
-                                </Tooltip> 
+                                </Tooltip>
 
                             </TableCell>
                         </TableRow>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react';
-import { Snackbar, Alert,Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Snackbar, Alert, Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -46,15 +46,15 @@ const TableFournisseur = ({ produits }) => {
         setEditFournisseur(null);
     };
 
-    
+
     const handleCloses = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setAlertState({ ...alertState, open: false });
     };
-     // Fonction pour sauvegarder les modifications
-     const handleSave = () => {
+    // Fonction pour sauvegarder les modifications
+    const handleSave = () => {
         // Envoyer une requête de mise à jour à votre backend
         axios.put(`http://localhost:8081/api/fournisseurs/${editFournisseur.idfourniseur}`, editFournisseur)
             .then(response => {
@@ -92,7 +92,7 @@ const TableFournisseur = ({ produits }) => {
             });
     };
 
-    
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setEditFournisseur({ ...editFournisseur, [name]: value });
@@ -112,13 +112,13 @@ const TableFournisseur = ({ produits }) => {
         setPage(0); // Reset page when searching
     };
 
-    
-  
+
+
     // Fonction pour filtrer les produits en fonction du terme de recherche
-    const filteredProduits = fournisseurs ? fournisseurs.filter(fournisseur  =>
+    const filteredProduits = fournisseurs ? fournisseurs.filter(fournisseur =>
         fournisseur.nom.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -137,132 +137,132 @@ const TableFournisseur = ({ produits }) => {
 
 
 
-    
+
 
     return (
         <>
-        <TableContainer component={Paper}>
-            <TextField
-                variant="outlined"
-                label="Rechercher"
-                value={searchTerm}
-                onChange={handleSearch}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton>
-                                <SearchIcon />
-                            </IconButton>
-                        </InputAdornment>
-                    ),
-                }}
-            />
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>
-                            <IconButton onClick={() => handleSort('nom')}>
-                                Fournisseur
-                                {orderByField === 'nom' && (
-                                    order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
-                                )}
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>Address</TableCell>
-                        <TableCell>Contact</TableCell>
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((fournisseur) => (
-                        <TableRow key={fournisseur.idfourniseur}>
-                            <TableCell>{fournisseur.idfourniseur}</TableCell>
-                            <TableCell>{fournisseur.nom}</TableCell>
-                            <TableCell>{fournisseur.adresse}</TableCell>
-                            <TableCell>{fournisseur.contact}</TableCell>
-                            <TableCell>
-                                <IconButton aria-label="Edit" onClick={() => handleEdit(fournisseur)} color='primary'>
-                                    <EditIcon />
+            <TableContainer component={Paper}>
+                <TextField
+                    variant="outlined"
+                    label="Rechercher"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton>
+                                    <SearchIcon />
                                 </IconButton>
-                                <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.idfourniseur)} color='error'>
-                                    <DeleteIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>
+                                <IconButton onClick={() => handleSort('nom')}>
+                                    Fournisseur
+                                    {orderByField === 'nom' && (
+                                        order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
+                                    )}
                                 </IconButton>
                             </TableCell>
+                            <TableCell>Address</TableCell>
+                            <TableCell>Contact</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={produits ? produits.length : fournisseurs.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((fournisseur) => (
+                            <TableRow key={fournisseur.idfourniseur}>
+                                <TableCell>{fournisseur.idfourniseur}</TableCell>
+                                <TableCell>{fournisseur.nom}</TableCell>
+                                <TableCell>{fournisseur.adresse}</TableCell>
+                                <TableCell>{fournisseur.contact}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="Edit" onClick={() => handleEdit(fournisseur)} color='primary'>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.idfourniseur)} color='error'>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={produits ? produits.length : fournisseurs.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
 
-        {editFournisseur && (
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Modifier Fournisseur</DialogTitle>
-                <DialogContent>
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                            <TextField
-                                        fullWidth
-                                        name="nom"
-                                        label="Nom ou société"
-                                        value={editFournisseur.nom}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                    </Grid>
-                    <Grid item xs={6}>
-                    <TextField
-                            fullWidth
-                            name="adresse"
-                            label="Adresse"
-                            value={editFournisseur.adresse}
-                            onChange={handleChange}
-                            required
-                        />
-                    </Grid>
-                        <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            name="telephone"
-                            label="Contact"
-                            value={editFournisseur.telephone}
-                            onChange={handleChange}
-                            required
-                        />
+            {editFournisseur && (
+                <Dialog open={open} onClose={handleClose}>
+                    <DialogTitle>Modifier Fournisseur</DialogTitle>
+                    <DialogContent>
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    name="nom"
+                                    label="Nom ou société"
+                                    value={editFournisseur.nom}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    name="adresse"
+                                    label="Adresse"
+                                    value={editFournisseur.adresse}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    name="telephone"
+                                    label="Contact"
+                                    value={editFournisseur.telephone}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </Grid>
+
                         </Grid>
-                        
-                     </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="warning">
-                        Annuler
-                    </Button>
-                    <Button onClick={handleSave} color="success">
-                        Sauvegarder
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="warning">
+                            Annuler
+                        </Button>
+                        <Button onClick={handleSave} color="success">
+                            Sauvegarder
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )}
 
 
-        <Snackbar
+            <Snackbar
                 open={alertState.open}
-                        autoHideDuration={6000}
-                        onClose={handleCloses}
-                    >
-                        <Alert onClose={handleCloses} severity={alertState.severity} sx={{ width: '100%' }}>
-                            {alertState.message}
-                        </Alert>
-                    </Snackbar>
+                autoHideDuration={6000}
+                onClose={handleCloses}
+            >
+                <Alert onClose={handleCloses} severity={alertState.severity} sx={{ width: '100%' }}>
+                    {alertState.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

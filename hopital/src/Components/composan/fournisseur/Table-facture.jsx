@@ -30,17 +30,17 @@ const Tablefacture = ({ produits }) => {
 
     // Mock data for testing
     const mockProduits = [
-        { id: 1, montant: 2500, nom: "gabriel", avance: 2500, datefacture: '002-04-2024',dateEcheance: '006-04-2024', },
-        { id: 2, montant: 6000, nom: "gabriel", avance: 4000, datefacture: '003-04-2024', dateEcheance: '006-04-2024',  },
-        { id: 3, montant: 3500, nom: "gabriel", avance: 1500, datefacture: '004-04-2024', dateEcheance: '006-04-2024',  },
-        { id: 4, montant: 15000, nom: "gabriel", avance: 5, datefacture: '005-04-2024', dateEcheance: '006-04-2024',  },
-        { id: 5, montant: 30000, nom: "gabriel", avance: 0, datefacture: '006-04-2024', dateEcheance: '006-04-2024',  },
+        { id: 1, montant: 2500, nom: "gabriel", avance: 2500, datefacture: '002-04-2024', dateEcheance: '006-04-2024', },
+        { id: 2, montant: 6000, nom: "gabriel", avance: 4000, datefacture: '003-04-2024', dateEcheance: '006-04-2024', },
+        { id: 3, montant: 3500, nom: "gabriel", avance: 1500, datefacture: '004-04-2024', dateEcheance: '006-04-2024', },
+        { id: 4, montant: 15000, nom: "gabriel", avance: 5, datefacture: '005-04-2024', dateEcheance: '006-04-2024', },
+        { id: 5, montant: 30000, nom: "gabriel", avance: 0, datefacture: '006-04-2024', dateEcheance: '006-04-2024', },
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.dateEcheance.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -78,7 +78,7 @@ const Tablefacture = ({ produits }) => {
                         <TableCell>ID</TableCell>
                         <TableCell>
                             <IconButton onClick={() => handleSort('nom')}>
-                            NOM
+                                NOM
                                 {orderByField === 'nom' && (
                                     order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
                                 )}

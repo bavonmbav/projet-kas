@@ -47,7 +47,7 @@ const ProduitsTable = ({ produits }) => {
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.designation.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -77,7 +77,7 @@ const ProduitsTable = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }} sx={{m:3}}
+                }} sx={{ m: 3 }}
             />
             <Table>
                 <TableHead>
@@ -112,22 +112,22 @@ const ProduitsTable = ({ produits }) => {
                             <TableCell>{produit.fournisseur}</TableCell>
                             <TableCell>{produit.dateExpiration}</TableCell>
                             <TableCell>
-                            <Tooltip title="View">
-                                <IconButton aria-label="View" color="info">
-                                    <VisibilityIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Edit">
-                            <IconButton aria-label="Edit" color="success">
-                                    <EditIcon />
-                                </IconButton>
-                            </Tooltip>
-                                <Tooltip title="Delete" >
-                                <IconButton aria-label="Delete" color="error">
-                                    <DeleteIcon />
-                                </IconButton>
+                                <Tooltip title="View">
+                                    <IconButton aria-label="View" color="info">
+                                        <VisibilityIcon />
+                                    </IconButton>
                                 </Tooltip>
-                               
+                                <Tooltip title="Edit">
+                                    <IconButton aria-label="Edit" color="success">
+                                        <EditIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Delete" >
+                                    <IconButton aria-label="Delete" color="error">
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+
                             </TableCell>
                         </TableRow>
                     ))}

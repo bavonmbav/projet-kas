@@ -9,17 +9,17 @@ import FactureStandard from "../compoments/operation/Sortie-client";
 import { Box } from "@mui/material";
 
 
-const NavigatorInput = () =>{
+const NavigatorInput = () => {
 
-    return(
-            <Routes >
-                <Route path="Addmedicament" element={<Addmedicament/>}/>
-                <Route path="Reapprovision" element={<Reapprovision/>}/>
-                <Route path="Fournisseur" element={<Fournisseur/>}/>
-                <Route path="Facturefournisseur" element={<Facturefournisseur/>}/>
-                <Route path="FactureAbonner" element={<FactureAbonner/>}/>
-                <Route path="FactureStandard" element={<FactureStandard/>}/>
-            </Routes>
+    return (
+        <Routes >
+            <Route path="Addmedicament" element={<Addmedicament />} />
+            <Route path="Reapprovision" element={<Reapprovision />} />
+            <Route path="Fournisseur" element={<Fournisseur />} />
+            <Route path="Facturefournisseur" element={<Facturefournisseur />} />
+            <Route path="FactureAbonner" element={<FactureAbonner />} />
+            <Route path="FactureStandard" element={<FactureStandard />} />
+        </Routes>
     )
 }
 export default NavigatorInput;

@@ -2,7 +2,7 @@ import React from "react";
 
 
 import { useState } from 'react';
-import { TextField, Button, Grid, Box } from '@mui/material';
+import { TextField, Button, Grid, Box, Typography } from '@mui/material';
 
 
 const Reapprovision = () => {
@@ -24,55 +24,61 @@ const Reapprovision = () => {
     };
 
 
-    return(
-                
-<form onSubmit={handleSubmit}>
-            <Box
-                sx={{
-                    display: 'grid',
-                    columnGap: 3,
-                    textAlign: 'center',
-                    rowGap: 3,
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    marginTop:4
-                }}
-        >
-            <Grid container spacing={3}>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        name="ID"
-                        label="ID"
-                        value={formState.ID}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        name="Designation"
-                        label="Designation"
-                        value={formState.Designation}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        name="Quantity"
-                        label="Quantity"
-                        value={formState.Quantity}
-                        onChange={handleInputChange}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                </Grid>
+    return (
+        <>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>reapprovisionner</Typography>
+            <Grid container spacing={-1}>
+                <form onSubmit={handleSubmit}>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            columnGap: 3,
+                            textAlign: 'center',
+                            rowGap: 3,
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            marginTop: 2,
+                            borderRadius: 2,
+                            p: 2,
+                            borderColor: 'primary.main',
+                            backgroundColor: 'rgb(255 255 255)'
+                        }}
+                    >
+
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="ID"
+                                label="ID"
+                                value={formState.ID}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="Designation"
+                                label="Designation"
+                                value={formState.Designation}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item >
+                            <TextField
+                                fullWidth
+                                name="Quantity"
+                                label="Quantity"
+                                value={formState.Quantity}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
+                        </Grid>
+
+                    </Box>
+                </form>
             </Grid>
-            </Box>
-        </form>
-                
-                        
+        </>
     )
 }
 export default Reapprovision;

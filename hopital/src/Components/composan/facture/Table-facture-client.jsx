@@ -30,17 +30,17 @@ const Tablefactureclient = ({ produits }) => {
 
     // Mock data for testing
     const mockProduits = [
-        { id: 1, montant: 2500, montantremis: 5000, montantrendu: 2500, numerofacture: '002-04-2024'},
-        { id: 2, montant: 6000, montantremis: 10000, montantrendu: 4000, numerofacture: '003-04-2024',  },
-        { id: 3, montant: 3500, montantremis: 5000, montantrendu: 1500, numerofacture: '004-04-2024',  },
-        { id: 4, montant: 15000, montantremis: 20000, montantrendu: 5, numerofacture: '005-04-2024',  },
-        { id: 5, montant: 30000, montantremis: 30000, montantrendu: 0, numerofacture: '006-04-2024',  },
+        { id: 1, montant: 2500, montantremis: 5000, montantrendu: 2500, numerofacture: '002-04-2024' },
+        { id: 2, montant: 6000, montantremis: 10000, montantrendu: 4000, numerofacture: '003-04-2024', },
+        { id: 3, montant: 3500, montantremis: 5000, montantrendu: 1500, numerofacture: '004-04-2024', },
+        { id: 4, montant: 15000, montantremis: 20000, montantrendu: 5, numerofacture: '005-04-2024', },
+        { id: 5, montant: 30000, montantremis: 30000, montantrendu: 0, numerofacture: '006-04-2024', },
     ];
     // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = mockProduits ? mockProduits.filter(produit =>
         produit.numerofacture.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
-    
+
 
     // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
@@ -70,7 +70,7 @@ const Tablefactureclient = ({ produits }) => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }} sx={{m:3}}
+                }} sx={{ m: 3 }}
             />
             <Table>
                 <TableHead>
@@ -78,7 +78,7 @@ const Tablefactureclient = ({ produits }) => {
                         <TableCell>ID</TableCell>
                         <TableCell>
                             <IconButton onClick={() => handleSort('montant')}>
-                            Montant
+                                Montant
                                 {orderByField === 'montant' && (
                                     order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
                                 )}
