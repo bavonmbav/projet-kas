@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
@@ -16,7 +16,7 @@ const Tablehistorique = ({ produits }) => {
     const [productList, setProductList] = useState(produits);
     const [editProduct, setEditProduct] = useState(null); // Ajoutez cette ligne pour définir l'état editProduct
     const [open, setOpen] = useState(false);
-
+  
 
 
 
@@ -65,7 +65,7 @@ const Tablehistorique = ({ produits }) => {
     const mockProduits = [
         { id: 1, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10 },
         { id: 2, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
-        { id: 3, designation: 'Produit C', stock: 15, stockMini: 8, prixAchat: 12, },
+        { id: 3, designation: 'Produit C', stock: 5, stockMini: 8, prixAchat: 12, },
         { id: 4, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8, },
         { id: 5, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10, },
         { id: 6, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
@@ -90,6 +90,9 @@ const Tablehistorique = ({ produits }) => {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+    };
+    const getStatut = (produit) => {
+        return produit.stock >= produit.stockMini ? <Chip label="disponible" color='success'/> : <Chip label="indisponible" color='error' />;
     };
 
     return (
@@ -125,6 +128,7 @@ const Tablehistorique = ({ produits }) => {
                             <TableCell>stockage</TableCell>
                             <TableCell>Stock Mini</TableCell>
                             <TableCell>Prix d'Achat</TableCell>
+                            <TableCell>statut</TableCell>
                             <TableCell>Commander</TableCell>
                         </TableRow>
                     </TableHead>
@@ -136,6 +140,7 @@ const Tablehistorique = ({ produits }) => {
                                 <TableCell>{produit.stock}</TableCell>
                                 <TableCell>{produit.stockMini}</TableCell>
                                 <TableCell>{produit.prixAchat}</TableCell>
+                                <TableCell>{getStatut(produit)}</TableCell>
                                 <TableCell>
                                     <IconButton aria-label="commande" onClick={() => handleEdit(produit)} color="primary">
                                         <BusAlert />
