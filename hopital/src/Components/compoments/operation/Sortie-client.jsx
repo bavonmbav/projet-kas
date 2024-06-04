@@ -50,13 +50,17 @@ const FactureStandard = () => {
         return panier.reduce((total, item) => total + (item.prix * item.quantity), 0).toFixed(2);
     };
 
+    const handlePrint = () => {
+        window.print();
+    };
+
     return (
         <>
-            <Box sx={{ borderRadius: 3, backgroundColor: 'rgb(255 255 255)', textAlign: 'center', marginBottom: 2 }}>
-                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30 }}>Bienvenue à la caisse :</Typography>
-            </Box>
+           
+                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>Bienvenue à la caisse :</Typography>
+           
 
-            <Grid item sx={{ marginLeft: 50 }} >
+            <Grid item sx={{ marginLeft: 50, marginTop:2 }} >
                 <Button type="submit" variant="contained" color="inherit">
                     <Badge badgeContent={panier.length} color="secondary">
                         <ShoppingCart />
@@ -200,10 +204,13 @@ const FactureStandard = () => {
                     {panier.length > 0 && (
                         <>
                             <Grid item >
-                                <Typography sx={{ textTransform: 'uppercase' }}>Total: {getTotal()}€</Typography>
+                                <Typography sx={{ textTransform: 'uppercase' }}>Total: {getTotal()}FC</Typography>
                             </Grid>
                             <Grid item >
                                 <Button variant="contained" color="primary" onClick={handleSubmit}>Soumettre le panier</Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="contained" color="secondary" onClick={handlePrint}>Imprimer la facture</Button>
                             </Grid>
                         </>
                     )}

@@ -14,8 +14,9 @@ const FactureAbonner = () => {
         idproduit: '',
         designation: '',
         prix: '',
-        quantity: '',
+        Quantity: '',
     })
+    const [panier, setPanier] = useState([]);
     const [inputchange, setInputchage] = useState('abonner')
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -24,17 +25,40 @@ const FactureAbonner = () => {
     const handleChangeInput = (event) => {
         setInputchage(event.target.value)
     }
+    const handleAddToCart = (event) => {
+        event.preventDefault();
+        setPanier([...panier, factureabonner]);
+        setFactureabonner({
+            idfacture: '',
+            nom: '',
+            adresse: '',
+            telephone: '',
+            idproduit: '',
+            designation: '',
+            prix: '',
+            Quantity: '',
+        });
+    };
+    const handleSubmit = () => {
+        console.log('Panier soumis:', panier);
+        // Ici, vous pouvez gérer la logique de soumission, comme envoyer les données au serveur
+        setPanier([]);
+    };
+
+    const getTotal = () => {
+        return panier.reduce((total, item) => total + (item.prix * item.Quantity), 0).toFixed(2);
+    };
 
     return (
         <Box sx={{
             textAlign: 'center',
         }}>
-            <Box sx={{ borderRadius: 3, backgroundColor: 'rgb(255 255 255)', textAlign: 'center', marginBottom: 2 }}>
-                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30 }}>bienvenue a la caise:</Typography>
-            </Box>
-            <Grid item sx={{ marginLeft: 50 }} >
+           
+                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>bienvenue a la caise:</Typography>
+            
+            <Grid item sx={{ marginLeft: 50 , marginTop:2}} >
                 <Button type="submit" variant="contained" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
+                    <Badge badgeContent={panier.length} color="secondary">
                         <ShoppingCart />
                     </Badge>
                     Panier Abonner</Button>
@@ -68,7 +92,7 @@ const FactureAbonner = () => {
 
 
             <Grid container spacing={-1}>
-                <form>
+                <form onSubmit={handleAddToCart}>
                     <Box
                         sx={{
                             display: 'grid',
@@ -159,10 +183,10 @@ const FactureAbonner = () => {
                                 fullWidth
                                 name="Quantity"
                                 label="Quantity"
-                                value={factureabonner.quantity}
+                                value={factureabonner.Quantity}
                                 onChange={handleInputChange}
-                                required>
-
+                                required
+                            >
                             </TextField>
                         </Grid>
                         <Grid item xs={12}>
@@ -172,6 +196,39 @@ const FactureAbonner = () => {
                 </form>
             </Grid>
 
+            <Grid container spacing={-1}>
+                <Box
+                    sx={{
+                        display: 'grid',
+                        columnGap: 2,
+                        textAlign: 'center',
+                        rowGap: 2,
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        marginTop: 2,
+                        borderRadius: 2,
+                        p: 2,
+                        borderColor: 'primary.main',
+                        backgroundColor: 'rgb(255 255 255)'
+                    }}
+                >
+                    <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase' }}>Panier</Typography>
+                    {panier.map((item, index) => (
+                        <Grid item key={index}>
+                            <Typography> produit: {item.designation} - {item.prix} x {item.Quantity} = {item.prix * item.Quantity} FC</Typography>
+                        </Grid>
+                    ))}
+                    {panier.length > 0 && (
+                        <>
+                            <Grid item >
+                                <Typography sx={{ textTransform: 'uppercase' }}>Total: {getTotal()}FC</Typography>
+                            </Grid>
+                            <Grid item >
+                                <Button variant="contained" color="primary" onClick={handleSubmit}>Soumettre le panier</Button>
+                            </Grid>
+                        </>
+                    )}
+                </Box>
+            </Grid>
         </Box>
     )
 }
