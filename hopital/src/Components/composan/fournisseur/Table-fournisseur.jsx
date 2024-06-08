@@ -6,7 +6,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 import { orderBy } from 'lodash';
-import axios from 'axios';
+import { supabase } from '../../../supabaseconfig';
 
 const TableFournisseur = ({ produits }) => {
     const [page, setPage] = useState(0);
@@ -15,7 +15,7 @@ const TableFournisseur = ({ produits }) => {
     const [order, setOrder] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
     const [fournisseurs, setFournisseurs] = useState([]);
-    const [editFournisseur, setEditFournisseur] = useState(null); // Ajoutez cette ligne pour définir l'état editProduct
+    const [currentFournisseur, setCurrentFournisseur] = useState(null); // Ajoutez cette ligne pour définir l'état editProduct
     const [open, setOpen] = useState(false);
     const [alertState, setAlertState] = useState({
         open: false,
@@ -24,78 +24,77 @@ const TableFournisseur = ({ produits }) => {
     });
 
     useEffect(() => {
-        // Appeler l'API pour récupérer les fournisseurs
-        axios.get('http://localhost:8081/api/fournisseurs')
-            .then(response => {
-                setFournisseurs(response.data);
-            })
-            .catch(error => {
-                console.error('Il y a eu une erreur!', error);
-            });
-    }, [editFournisseur]);
+        const fetchFournisseurs = async () => {
+            const { data, error } = await supabase
+                .from('fournisseur')
+                .select('*');
 
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                setFournisseurs(data);
+            }
+        };
+        fetchFournisseurs();
+    }, [currentFournisseur]);
 
-    // Fonction de gestion de l'édition
-    const handleEdit = (product) => {
-        setEditFournisseur(product); // Définissez le produit en cours d'édition
-        setOpen(true); // Ouvrez le dialogue
-    };
+  
     // Fonction pour fermer le dialogue
     const handleClose = () => {
         setOpen(false);
-        setEditFournisseur(null);
+        setCurrentFournisseur(null);
     };
-
-
+    const handleOpen = (fournisseur) => {
+        setCurrentFournisseur(fournisseur);
+        setOpen(true);
+    };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCurrentFournisseur({ ...currentFournisseur, [name]: value });
+    };
     const handleCloses = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setAlertState({ ...alertState, open: false });
     };
-    // Fonction pour sauvegarder les modifications
-    const handleSave = () => {
-        // Envoyer une requête de mise à jour à votre backend
-        axios.put(`http://localhost:8081/api/fournisseurs/${editFournisseur.idfourniseur}`, editFournisseur)
-            .then(response => {
-                // Mettre à jour l'état des fournisseurs ou gérer la réponse en conséquence
-                console.log('Fournisseur mis à jour avec succès');
-                setAlertState({
-                    open: true,
-                    severity: 'success',
-                    message: 'fournisseur modifier',
-                });
-            })
-            .catch(error => {
-                console.error('Erreur lors de la mise à jour du fournisseur', error);
-            });
-        handleClose();
+    // delete un fournisseur
+    const handleDelete = async (id) => {
+        const { error } = await supabase
+            .from('fournisseur')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error deleting data:', error);
+        } else {
+            setFournisseurs(fournisseurs.filter((fournisseur) => fournisseur.id !== id));
+        }
     };
 
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:8081/api/fournisseurs/${id}`)
-            .then(response => {
-                console.log('Fournisseur supprimé avec succès');
-                // Supprimer l'élément de la liste locale des fournisseurs
-                setFournisseurs(prevFournisseurs => prevFournisseurs.filter(fournisseur => fournisseur.id !== id));
-                // Recharger les données depuis le serveur
-                axios.get('http://localhost:8081/api/fournisseurs')
-                    .then(response => {
-                        setFournisseurs(response.data);
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors du chargement des fournisseurs après suppression', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Erreur lors de la suppression du fournisseur', error);
+    // mettre a jour un fournisseur
+    const handleEdit = async () => {
+        const { error } = await supabase
+            .from('fournisseur')
+            .update(currentFournisseur)
+            .eq('id', currentFournisseur.id);
+
+        if (error) {
+            console.error('Error updating data:', error);
+            setAlertState({
+                open: true,
+                severity: 'error',
+                message: 'une erreur de connexion!',
             });
-    };
-
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setEditFournisseur({ ...editFournisseur, [name]: value });
+        } else {
+            setFournisseurs(fournisseurs.map((fournisseur) => fournisseur.id === currentFournisseur.id ? currentFournisseur : fournisseur));
+            setAlertState({
+                open: true,
+                severity: 'success',
+                message: 'modification avec succès!',
+            });
+            handleClose();
+        }
     };
 
     const handleSort = (field) => {
@@ -132,12 +131,6 @@ const TableFournisseur = ({ produits }) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-
-
-
-
-
 
     return (
         <>
@@ -180,12 +173,12 @@ const TableFournisseur = ({ produits }) => {
                                 <TableCell>{fournisseur.idfourniseur}</TableCell>
                                 <TableCell>{fournisseur.nom}</TableCell>
                                 <TableCell>{fournisseur.adresse}</TableCell>
-                                <TableCell>{fournisseur.contact}</TableCell>
+                                <TableCell>{fournisseur.telephone}</TableCell>
                                 <TableCell>
-                                    <IconButton aria-label="Edit" onClick={() => handleEdit(fournisseur)} color='primary'>
+                                    <IconButton aria-label="Edit" onClick={() => handleOpen(fournisseur)} color='primary'>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.idfourniseur)} color='error'>
+                                    <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.id)} color='error'>
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>
@@ -204,7 +197,7 @@ const TableFournisseur = ({ produits }) => {
                 />
             </TableContainer>
 
-            {editFournisseur && (
+            {currentFournisseur && (
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Modifier Fournisseur</DialogTitle>
                     <DialogContent>
@@ -214,7 +207,7 @@ const TableFournisseur = ({ produits }) => {
                                     fullWidth
                                     name="nom"
                                     label="Nom ou société"
-                                    value={editFournisseur.nom}
+                                    value={currentFournisseur?.nom || ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -224,7 +217,7 @@ const TableFournisseur = ({ produits }) => {
                                     fullWidth
                                     name="adresse"
                                     label="Adresse"
-                                    value={editFournisseur.adresse}
+                                    value={currentFournisseur?.adresse || ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -234,7 +227,7 @@ const TableFournisseur = ({ produits }) => {
                                     fullWidth
                                     name="telephone"
                                     label="Contact"
-                                    value={editFournisseur.telephone}
+                                    value={currentFournisseur?.telephone || ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -246,7 +239,7 @@ const TableFournisseur = ({ produits }) => {
                         <Button onClick={handleClose} color="warning">
                             Annuler
                         </Button>
-                        <Button onClick={handleSave} color="success">
+                        <Button onClick={handleEdit} color="success">
                             Sauvegarder
                         </Button>
                     </DialogActions>

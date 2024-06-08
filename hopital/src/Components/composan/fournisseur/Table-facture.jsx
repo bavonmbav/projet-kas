@@ -1,18 +1,65 @@
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Snackbar, Alert, Typography, Box, Button } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { useReactToPrint } from 'react-to-print';
 import { orderBy } from 'lodash';
+import { supabase } from '../../../supabaseconfig';
 
-const Tablefacture = ({ produits }) => {
+const Tablefacture = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [orderByField, setOrderByField] = useState('');
     const [order, setOrder] = useState('asc');
+    const [factures, setFactures] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [alertState, setAlertState] = useState({
+        open: false,
+        severity: '',
+        message: '',
+    });
+    const componentRef = useRef();
+
+    useEffect(() => {
+        const fetchFactures = async () => {
+            const { data, error } = await supabase
+                .from('facturefournisseur')
+                .select(`
+                    id,
+                    fournisseur_id,
+                    montant,
+                    avance,
+                    datefacture,
+                    dateecheance,
+                    fournisseur: fournisseur (nom)
+                `);
+
+            if (error) {
+                console.error('Error fetching data:', error);
+                setAlertState({
+                    open: true,
+                    severity: 'error',
+                    message: 'Erreur lors de la récupération des factures!',
+                });
+            } else {
+                setFactures(data);
+            }
+        };
+        fetchFactures();
+    }, []);
+
+    const handlePrint = useReactToPrint({
+        content: () => componentRef.current,
+    });
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertState({ ...alertState, open: false });
+    };
 
     const handleSort = (field) => {
         if (orderByField === field) {
@@ -28,23 +75,11 @@ const Tablefacture = ({ produits }) => {
         setPage(0); // Reset page when searching
     };
 
-    // Mock data for testing
-    const mockProduits = [
-        { id: 1, montant: 2500, nom: "gabriel", avance: 2500, datefacture: '002-04-2024', dateEcheance: '006-04-2024', },
-        { id: 2, montant: 6000, nom: "gabriel", avance: 4000, datefacture: '003-04-2024', dateEcheance: '006-04-2024', },
-        { id: 3, montant: 3500, nom: "gabriel", avance: 1500, datefacture: '004-04-2024', dateEcheance: '006-04-2024', },
-        { id: 4, montant: 15000, nom: "gabriel", avance: 5, datefacture: '005-04-2024', dateEcheance: '006-04-2024', },
-        { id: 5, montant: 30000, nom: "gabriel", avance: 0, datefacture: '006-04-2024', dateEcheance: '006-04-2024', },
-    ];
-    // Fonction pour filtrer les produits en fonction du terme de recherche
-    const filteredProduits = mockProduits ? mockProduits.filter(produit =>
-        produit.dateEcheance.toLowerCase().includes(searchTerm.toLowerCase())
-    ) : [];
+    const filteredFactures = factures.filter(facture =>
+        facture.fournisseur.nom.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-
-    // Trie les produits filtrés
-    const sortedProduits = orderBy(filteredProduits, orderByField, order);
-
+    const sortedFactures = orderBy(filteredFactures, orderByField, order);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -56,7 +91,20 @@ const Tablefacture = ({ produits }) => {
     };
 
     return (
-        <TableContainer component={Paper}>
+        <>
+            <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
+                <Typography variant="h4" component="h2" gutterBottom>
+                    Factures Fournisseur
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PrintIcon />}
+                    onClick={handlePrint}
+                >
+                    Imprimer
+                </Button>
+            </Box>
             <TextField
                 variant="outlined"
                 label="Rechercher"
@@ -72,53 +120,64 @@ const Tablefacture = ({ produits }) => {
                     ),
                 }}
             />
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>
-                            <IconButton onClick={() => handleSort('nom')}>
-                                NOM
-                                {orderByField === 'nom' && (
-                                    order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
-                                )}
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>Montant</TableCell>
-                        <TableCell>Avance</TableCell>
-                        <TableCell>date de facturation</TableCell>
-                        <TableCell>date d'echeance</TableCell>
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((produit) => (
-                        <TableRow key={produit.id}>
-                            <TableCell>{produit.id}</TableCell>
-                            <TableCell>{produit.nom}</TableCell>
-                            <TableCell>{produit.montant}</TableCell>
-                            <TableCell>{produit.avance}</TableCell>
-                            <TableCell>{produit.datefacture}</TableCell>
-                            <TableCell>{produit.dateEcheance}</TableCell>
+            <TableContainer component={Paper} ref={componentRef}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
                             <TableCell>
-                                <IconButton aria-label="Print">
-                                    <PrintIcon />
+                                <IconButton onClick={() => handleSort('fournisseur.nom')}>
+                                    NOM
+                                    {orderByField === 'fournisseur.nom' && (
+                                        order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
+                                    )}
                                 </IconButton>
                             </TableCell>
+                            <TableCell>Montant</TableCell>
+                            <TableCell>Avance</TableCell>
+                            <TableCell>Date de Facture</TableCell>
+                            <TableCell>Date d'Échéance</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {sortedFactures.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((facture) => (
+                            <TableRow key={facture.id}>
+                                <TableCell>{facture.id}</TableCell>
+                                <TableCell>{facture.fournisseur.nom}</TableCell>
+                                <TableCell>{facture.montant}</TableCell>
+                                <TableCell>{facture.avance}</TableCell>
+                                <TableCell>{facture.datefacture}</TableCell>
+                                <TableCell>{facture.dateecheance}</TableCell>
+                                <TableCell>
+                                    <IconButton aria-label="Print" onClick={handlePrint}>
+                                        <PrintIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={produits ? produits.length : mockProduits.length}
+                count={filteredFactures.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </TableContainer>
+            <Snackbar
+                open={alertState.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                    {alertState.message}
+                </Alert>
+            </Snackbar>
+        </>
     );
 };
 

@@ -1,27 +1,73 @@
 import React from "react";
-import axios from "axios";
 import { useState, useEffect } from 'react';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, ListItem, Snackbar, Alert, Typography, Box } from '@mui/material';
-
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Snackbar, Alert, Typography, Box} from '@mui/material';
+import { supabase } from '../../../supabaseconfig';
 
 const Facturefournisseur = () => {
     const [fournisseurs, setFournisseurs] = useState([]);
-    const [formState, setFormState] = useState({
-        idFournisseur: '',
+    const [facture, setFacture] = useState({
+        fournisseur_id: '',
         montant: '',
         avance: '',
-        dateFacture: '',
-        dateEcheance: '',
+        datefacture: '',
+        dateecheance: ''
     });
+
     const [alertState, setAlertState] = useState({
         open: false,
         severity: '',
         message: '',
     });
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormState({ ...formState, [name]: value });
+    useEffect(() => {
+        const fetchFournisseurs = async () => {
+            const { data, error } = await supabase
+                .from('fournisseur')
+                .select('*');
+
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                setFournisseurs(data);
+            }
+        };
+        fetchFournisseurs();
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const { error } = await supabase
+            .from('facturefournisseur')
+            .insert([facture]);
+
+        if (error) {
+            console.error('Error inserting data:', error);
+            setAlertState({
+                open: true,
+                severity: 'error',
+                message: 'Erreur lors de l\'ajout de la facture!',
+            });
+        } else {
+            alert('Facture ajoutée avec succès');
+            setAlertState({
+                open: true,
+                severity: 'success',
+                message: 'facture ajoutée avec succès!',
+            });
+            setFacture({
+                fournisseur_id: '',
+                montant: '',
+                avance: '',
+                datefacture: '',
+                dateecheance: ''
+            });
+        }
     };
+
+  const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFacture({ ...facture, [name]: value });
+    };
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -29,53 +75,9 @@ const Facturefournisseur = () => {
         setAlertState({ ...alertState, open: false });
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        // Ajoutez ici la logique pour soumettre le formulaire
-        try {
-            const response = await axios.post('http://localhost:8081/api/facture', formState);
-            setAlertState({
-                open: true,
-                severity: 'success',
-                message: 'facture ajouté avec succès!',
-            });
-            setFormState({
-                idFournisseur: '',
-                montant: '',
-                avance: '',
-                dateFacture: '',
-                dateEcheance: '',
-            });
-        } catch (error) {
-            setAlertState({
-                open: true,
-                severity: 'error',
-                message: 'Erreur lors de l\'ajout de la facture!',
-            });
-            console.error('Erreur lors de l\'ajout du fournisseur:', error);
-        }
-
-        console.log(formState);
-    };
-
-    useEffect(() => {
-        // Appeler l'API pour récupérer les fournisseurs
-        axios.get('http://localhost:8081/api/fournisseurs')
-            .then(response => {
-                setFournisseurs(response.data);
-            })
-            .catch(error => {
-                console.error('Il y a eu une erreur!', error);
-            });
-    }, []);
-
-
-
     return (
         <>
-
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer une facture fournisseur</Typography>
-
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmit}>
                     <Box
@@ -92,75 +94,72 @@ const Facturefournisseur = () => {
                             backgroundColor: 'rgb(255 255 255)'
                         }}
                     >
-
-                        <Grid item >
+                        <Grid item>
                             <TextField
                                 fullWidth
+                                label="Montant"
                                 name="montant"
-                                label="Montant Facture"
-
-                                value={formState.montant}
+                                type="number"
+                                value={facture.montant}
                                 onChange={handleInputChange}
                             />
                         </Grid>
-                        <Grid item >
+                        <Grid item>
                             <FormControl fullWidth>
                                 <InputLabel id="idFournisseurLabel">Fournisseur</InputLabel>
                                 <Select
                                     labelId="idFournisseurLabel"
-                                    name="idFournisseur"
-                                    value={formState.idFournisseur}
+                                    id="fournisseur"
+                                    name="fournisseur_id"
+                                    value={facture.fournisseur_id}
                                     onChange={handleInputChange}
+                                    label="Fournisseur"
                                 >
-                                    <MenuItem value="">Sélectionner</MenuItem>
                                     {fournisseurs.map((fournisseur) => (
+                                        <MenuItem key={fournisseur.id} value={fournisseur.id}>
+                                            {fournisseur.nom}
+                                        </MenuItem>
+                                    ))}
 
-                                        <MenuItem key={fournisseur.idFournisseur}>
-                                            <ListItem value={fournisseur.nom}></ListItem>
-                                        </MenuItem>)
-                                    )}
-                                    <MenuItem value="1">gabriel</MenuItem>
-
-                                    {/* Ajoutez ici les options de sélection des fournisseurs */}
+                                    {/* <MenuItem value='5'>Ten</MenuItem> */}
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item >
+                        <Grid item>
                             <TextField
                                 fullWidth
+                                label="Avance"
                                 name="avance"
-                                label="avance"
-
-                                value={formState.avance}
+                                type="number"
+                                value={facture.avance}
                                 onChange={handleInputChange}
                             />
                         </Grid>
-                        <Grid item >
+                        <Grid item>
                             <TextField
                                 fullWidth
-                                name="dateFacture"
-                                label="date facturation"
+                                label="Date de Facture"
+                                name="datefacture"
                                 type="date"
-                                value={formState.dateFacture}
+                                InputLabelProps={{ shrink: true }}
+                                value={facture.datefacture}
                                 onChange={handleInputChange}
                             />
                         </Grid>
-
-                        <Grid item >
+                        <Grid item>
                             <TextField
                                 fullWidth
-                                name="dateEcheance"
-                                label="Date d'echeance"
+                                label="Date d'Échéance"
+                                name="dateecheance"
                                 type="date"
-                                value={formState.dateEcheance}
+                                InputLabelProps={{ shrink: true }}
+                                value={facture.dateecheance}
                                 onChange={handleInputChange}
                             />
                         </Grid>
-
-                        <Grid item >
+                        <Grid item>
                             <Button type="submit" variant="contained" color="primary">Soumettre</Button>
                         </Grid>
-
                     </Box>
                 </form>
             </Grid>
@@ -174,7 +173,7 @@ const Facturefournisseur = () => {
                 </Alert>
             </Snackbar>
         </>
-    )
+    );
 }
-export default Facturefournisseur;
 
+export default Facturefournisseur;

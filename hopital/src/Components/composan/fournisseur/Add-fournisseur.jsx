@@ -1,14 +1,39 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Box, TextField, Button, Grid, Snackbar, Alert, Typography } from '@mui/material';
+import { supabase } from '../../../supabaseconfig';
 
 const Fournisseur = () => {
-    const [formState, setFormState] = useState({
-        idfourniseur: null,
-        nom: '',
-        adresse: '',
-        telephone: '',
-    });
+    const [nom, setNom] = useState('');
+    const [adresse, setAdresse] = useState('');
+    const [telephone, setTelephone] = useState('');
+
+
+    const handleSubmits = async (e) => {
+        e.preventDefault();
+        const { data, error } = await supabase
+            .from('fournisseur')
+            .insert([{ nom, adresse, telephone }]);
+
+        if (error) {
+            setAlertState({
+                open: true,
+                severity: 'error',
+                message: 'Erreur lors de l\'ajout du fournisseur!',
+            });
+            console.error('Error inserting data:', error);
+        } else {
+            console.log('Data inserted successfully:', data);
+            setAlertState({
+                open: true,
+                severity: 'success',
+                message: 'Fournisseur ajouté avec succès!',
+            });
+            // Clear form fields
+            setNom('');
+            setAdresse('');
+            setTelephone('');
+        }
+    };
 
     const [alertState, setAlertState] = useState({
         open: false,
@@ -20,12 +45,10 @@ const Fournisseur = () => {
 
 
     const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFormState({ ...formState, [name]: value });
-
+        setTelephone(event.target.value);
         // Validate phone number when it's changed
-        if (name === 'telephone') {
-            validatePhoneNumber(value);
+        if (telephone === telephone) {
+            validatePhoneNumber(telephone);
         }
     };
 
@@ -38,43 +61,7 @@ const Fournisseur = () => {
             setErrors(rest);
         }
     };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        // Validate phone number before submitting
-        validatePhoneNumber(formState.telephone);
-        if (errors.telephone) {
-            setAlertState({
-                open: true,
-                severity: 'error',
-                message: errors.telephone,
-            });
-            return;
-        }
-
-        try {
-            const response = await axios.post('http://localhost:8081/api/fournisseurs', formState);
-            setAlertState({
-                open: true,
-                severity: 'success',
-                message: 'Fournisseur ajouté avec succès!',
-            });
-            setFormState({
-                nom: '',
-                adresse: '',
-                telephone: '',
-            });
-        } catch (error) {
-            setAlertState({
-                open: true,
-                severity: 'error',
-                message: 'Erreur lors de l\'ajout du fournisseur!',
-            });
-            console.error('Erreur lors de l\'ajout du fournisseur:', error);
-        }
-    };
-
+    //alert
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -87,7 +74,7 @@ const Fournisseur = () => {
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer un fournisseur</Typography>
 
             <Grid container spacing={-1}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmits}>
                     <Box
                         sx={{
                             display: 'grid',
@@ -108,8 +95,8 @@ const Fournisseur = () => {
                                 fullWidth
                                 name="nom"
                                 label="Nom ou société"
-                                value={formState.nom}
-                                onChange={handleInputChange}
+                                value={nom}
+                                onChange={(e) => setNom(e.target.value)}
                                 error={!!errors.nom}
                                 helperText={errors.nom}
                                 required
@@ -120,8 +107,9 @@ const Fournisseur = () => {
                                 fullWidth
                                 name="adresse"
                                 label="Adresse"
-                                value={formState.adresse}
-                                onChange={handleInputChange}
+                                value={adresse}
+                                onChange={(e) => setAdresse(e.target.value)}
+
                                 error={!!errors.adresse}
                                 helperText={errors.adresse}
                                 required
@@ -132,7 +120,7 @@ const Fournisseur = () => {
                                 fullWidth
                                 name="telephone"
                                 label="Contact"
-                                value={formState.telephone}
+                                value={telephone}
                                 onChange={handleInputChange}
                                 error={!!errors.telephone}
                                 helperText={errors.telephone}

@@ -73,28 +73,7 @@ const FactureStandard = () => {
     };
 
     const handleSubmit = async () => {
-        const total = getTotal();
-        const resteAmount = parseFloat((argentRemis - total).toFixed(2));
-
-        // Enregistrer la facture dans la table factures
-        const { data: factureData, error: factureError } = await supabase.from('factures').insert([
-            {
-                nom_client: clientInfo.nom,
-                total: total,
-                argent_remis: argentRemis,
-                reste: resteAmount,
-                date_vente: new Date().toISOString(),
-            }
-        ]).select();
-
-        if (factureError) {
-            console.error('Error inserting invoice:', factureError);
-            return;
-        }
-
-        const factureId = factureData[0].id;
-
-        // Enregistrer les lignes de facture dans la table ligne_facture
+        // Mettre à jour le stock des produits vendus
         for (const item of panier) {
             const productToUpdate = produits.find((product) => product.idproduit === item.idproduit);
             if (!productToUpdate) {
@@ -107,17 +86,10 @@ const FactureStandard = () => {
                 .from('produit')
                 .update({ stock: newStock })
                 .eq('idproduit', item.idproduit);
+        }
 
-            await supabase.from('ligne_facture').insert([
-                {
-                    id_facture: factureId,
-                    id_produit: item.idproduit,
-                    quantite: item.quantity,
-                    prix_unitaire: item.prixVente,
-                    total: item.prixVente * item.quantity,
-                }
-            ]);
-
+        // Enregistrer les détails de la vente dans la table des ventes
+        for (const item of panier) {
             await supabase.from('ventes').insert([
                 {
                     id_produit: item.idproduit,

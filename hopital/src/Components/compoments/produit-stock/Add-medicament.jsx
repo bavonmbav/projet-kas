@@ -1,33 +1,86 @@
-import React from "react";
-import { useState } from 'react';
-import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Typography } from '@mui/material';
-
+import React, { useState, useEffect } from "react";
+import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Typography, Snackbar, Alert } from '@mui/material';
+import { supabase } from '../../../supabaseconfig';
 
 const Addmedicament = () => {
     const [formState, setFormState] = useState({
-        prixChat: '',
-        idProduit: '',
+        prixAchat: '',
+        idproduit: '',
         designation: '',
         prixVente: '',
         stockMini: '',
         dateExpiration: '',
-        idFournisseur: '',
+        fournisseur_id: '',
     });
+
+    const [fournisseurs, setFournisseurs] = useState([]);
+
+    const [alertState, setAlertState] = useState({
+        open: false,
+        severity: '',
+        message: '',
+    });
+
+    useEffect(() => {
+        const fetchFournisseurs = async () => {
+            const { data, error } = await supabase
+                .from('fournisseur')
+                .select('id, nom');
+
+            if (error) {
+                console.error('Error fetching data:', error);
+            } else {
+                setFournisseurs(data);
+            }
+        };
+
+        fetchFournisseurs();
+    }, []);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormState({ ...formState, [name]: value });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        // Ajoutez ici la logique pour soumettre le formulaire
-        console.log(formState);
+        const { error } = await supabase
+            .from('produit')
+            .insert([formState]);
+
+        if (error) {
+            console.error('Error inserting data:', error);
+            setAlertState({
+                open: true,
+                severity: 'error',
+                message: 'Erreur lors de l\'ajout du produit!',
+            });
+        } else {
+            setAlertState({
+                open: true,
+                severity: 'success',
+                message: 'Produit ajouté avec succès!',
+            });
+            setFormState({
+                prixAchat: '',
+                idproduit: '',
+                designation: '',
+                prixVente: '',
+                stockMini: '',
+                dateExpiration: '',
+                fournisseur_id: '',
+            });
+        }
     };
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertState({ ...alertState, open: false });
+    };
 
     return (
-
         <>
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>ajoute un produit</Typography>
             <Grid container spacing={-1}>
@@ -46,22 +99,21 @@ const Addmedicament = () => {
                             backgroundColor: 'rgb(255 255 255)'
                         }}
                     >
-
                         <Grid item>
                             <TextField
                                 fullWidth
-                                name="prixChat"
+                                name="prixAchat"
                                 label="Prix d'achat"
-                                value={formState.prixChat}
+                                value={formState.prixAchat}
                                 onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item >
                             <TextField
                                 fullWidth
-                                name="idProduit"
+                                name="idproduit"
                                 label="ID Produit"
-                                value={formState.idProduit}
+                                value={formState.idproduit}
                                 onChange={handleInputChange}
                             />
                         </Grid>
@@ -99,32 +151,48 @@ const Addmedicament = () => {
                                 label="Date d'expiration"
                                 type="date"
                                 value={formState.dateExpiration}
+                                InputLabelProps={{ shrink: true }}
                                 onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item >
                             <FormControl fullWidth>
-                                <InputLabel id="idFournisseurLabel">ID Fournisseur</InputLabel>
+                                <InputLabel id="fournisseur_idLabel">Fournisseur</InputLabel>
                                 <Select
-                                    labelId="idFournisseurLabel"
-                                    name="idFournisseur"
-                                    value={formState.idFournisseur}
+                                    labelId="fournisseur_idLabel"
+                                    name="fournisseur_id"
+                                    value={formState.fournisseur_id || ''}
                                     onChange={handleInputChange}
+                                    label="Fournisseur"
                                 >
-                                    <MenuItem value="">Sélectionner</MenuItem>
-                                    {/* Ajoutez ici les options de sélection des fournisseurs */}
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {fournisseurs.map((fournisseur) => (
+                                        <MenuItem key={fournisseur.id} value={fournisseur.id}>
+                                            {fournisseur.nom}
+                                        </MenuItem>
+                                    ))}
                                 </Select>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
                             <Button type="submit" variant="contained" color="primary">Soumettre</Button>
                         </Grid>
-
                     </Box>
                 </form>
             </Grid>
+            <Snackbar
+                open={alertState.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                    {alertState.message}
+                </Alert>
+            </Snackbar>
         </>
-    )
+    );
 }
-export default Addmedicament;
 
+export default Addmedicament;

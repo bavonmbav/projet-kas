@@ -1,24 +1,56 @@
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip, Snackbar, Alert } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 import { BusAlert } from '@mui/icons-material';
-
+import { supabase } from '../../../supabaseconfig';
 import { orderBy } from 'lodash';
 
-const Tablehistorique = ({ produits }) => {
+const Tablehistorique = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [orderByField, setOrderByField] = useState('');
     const [order, setOrder] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
-    const [productList, setProductList] = useState(produits);
-    const [editProduct, setEditProduct] = useState(null); // Ajoutez cette ligne pour définir l'état editProduct
+    const [productList, setProductList] = useState([]);
+    const [editProduct, setEditProduct] = useState(null);
     const [open, setOpen] = useState(false);
-  
+    const [fournisseurs, setFournisseurs] = useState([]);
+    const [alertState, setAlertState] = useState({
+        open: false,
+        severity: '',
+        message: '',
+    });
 
+    useEffect(() => {
+        const fetchFactures = async () => {
+            const { data, error } = await supabase
+                .from('produit')
+                .select(`
+                    id,
+                    fournisseur_id,
+                    idproduit,
+                    designation,
+                    prixAchat,
+                    stock,                                    
+                    stockMini,
+                    fournisseur: fournisseur (nom)
+                `);
 
+            if (error) {
+                console.error('Error fetching data:', error);
+                setAlertState({
+                    open: true,
+                    severity: 'error',
+                    message: 'Erreur lors de la récupération des factures!',
+                });
+            } else {
+                setFournisseurs(data);
+            }
+        };
+        fetchFactures();
+    }, []);
 
     const handleSort = (field) => {
         if (orderByField === field) {
@@ -31,57 +63,61 @@ const Tablehistorique = ({ produits }) => {
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
-        setPage(0); // Reset page when searching
+        setPage(0);
     };
 
-    // Fonction de gestion de l'édition
     const handleEdit = (product) => {
-        setEditProduct(product); // Définissez le produit en cours d'édition
-        setOpen(true); // Ouvrez le dialogue
+        setEditProduct(product);
+        setOpen(true);
     };
 
-    // Fonction pour fermer le dialogue
     const handleClose = () => {
         setOpen(false);
         setEditProduct(null);
+
+    };
+    const handleSave = async () => {
+        if (!editProduct || !editProduct.id) {
+            console.error('Invalid editProduct:', editProduct);
+            // Gérer le cas où editProduct est invalide ou manque d'ID
+            return;
+        }
+
+        try {
+            const { data, error } = await supabase
+                .from('commande')
+                .insert([
+                    { produit_id: editProduct.id, quantity: editProduct.quantity, fournisseur_id: editProduct.fournisseur_id }
+                ]); 
+                setAlertState({
+                    open: true,
+                    severity: 'success',
+                    message: 'Commande sauvegardée avec succès!',
+                });
+            if (error) {
+                throw error;
+            }  
+            handleClose();
+        } catch (error) {
+            console.error('Error inserting data:', error);
+            setAlertState({
+                open: true,
+                severity: 'error',
+                message: 'Erreur lors de la sauvegarde de la commande!',
+            });
+        }
     };
 
-    // Fonction pour sauvegarder les modifications
-    const handleSave = () => {
-        const updatedProductList = productList.map(produit =>
-            produit.id === editProduct.id ? editProduct : produit
-        );
-        setProductList(updatedProductList);
-        handleClose();
-    };
-
-    // Fonction pour gérer les modifications de champ
     const handleChange = (event) => {
         const { name, value } = event.target;
         setEditProduct({ ...editProduct, [name]: value });
     };
 
-    // Mock data for testing
-    const mockProduits = [
-        { id: 1, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10 },
-        { id: 2, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
-        { id: 3, designation: 'Produit C', stock: 5, stockMini: 8, prixAchat: 12, },
-        { id: 4, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8, },
-        { id: 5, designation: 'Produit A', stock: 10, stockMini: 5, prixAchat: 10, },
-        { id: 6, designation: 'Produit B', stock: 20, stockMini: 10, prixAchat: 15, },
-        { id: 7, designation: 'Produit C', stock: 15, stockMini: 8, prixAchat: 12, },
-        { id: 8, designation: 'Produit D', stock: 5, stockMini: 2, prixAchat: 8, },
-        { id: 9, designation: 'Produit E', stock: 25, stockMini: 12, prixAchat: 18, }
-    ];
-    // Fonction pour filtrer les produits en fonction du terme de recherche
-    const filteredProduits = mockProduits ? mockProduits.filter(produit =>
+    const filteredProduits = fournisseurs ? fournisseurs.filter(produit =>
         produit.designation.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
 
-
-    // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -91,8 +127,9 @@ const Tablehistorique = ({ produits }) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
     const getStatut = (produit) => {
-        return produit.stock >= produit.stockMini ? <Chip label="disponible" color='success'/> : <Chip label="indisponible" color='error' />;
+        return produit.stock >= produit.stockMini ? <Chip label="disponible" color='success' /> : <Chip label="indisponible" color='error' />;
     };
 
     return (
@@ -125,17 +162,17 @@ const Tablehistorique = ({ produits }) => {
                                     )}
                                 </IconButton>
                             </TableCell>
-                            <TableCell>stockage</TableCell>
+                            <TableCell>Stockage</TableCell>
                             <TableCell>Stock Mini</TableCell>
                             <TableCell>Prix d'Achat</TableCell>
-                            <TableCell>statut</TableCell>
+                            <TableCell>Statut</TableCell>
                             <TableCell>Commander</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((produit) => (
                             <TableRow key={produit.id}>
-                                <TableCell>{produit.id}</TableCell>
+                                <TableCell>{produit.idproduit}</TableCell>
                                 <TableCell>{produit.designation}</TableCell>
                                 <TableCell>{produit.stock}</TableCell>
                                 <TableCell>{produit.stockMini}</TableCell>
@@ -153,7 +190,7 @@ const Tablehistorique = ({ produits }) => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={produits ? produits.length : mockProduits.length}
+                    count={fournisseurs.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -172,6 +209,7 @@ const Tablehistorique = ({ produits }) => {
                             value={editProduct.designation}
                             onChange={handleChange}
                             fullWidth
+                            disabled
                         />
                         <TextField
                             margin="dense"
@@ -181,7 +219,6 @@ const Tablehistorique = ({ produits }) => {
                             onChange={handleChange}
                             fullWidth
                         />
-
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose} color="warning">
@@ -193,6 +230,16 @@ const Tablehistorique = ({ produits }) => {
                     </DialogActions>
                 </Dialog>
             )}
+
+            <Snackbar
+                open={alertState.open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                    {alertState.message}
+                </Alert>
+            </Snackbar>
 
         </div>
     );
