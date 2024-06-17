@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Grid, Badge, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem } from '@mui/material';
+import { Box, TextField, Button, Typography, Grid, Badge, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { ShoppingCart } from '@mui/icons-material';
 import { supabase } from '../../../supabaseconfig';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const FactureStandard = () => {
     const [factureabonner, setFactureabonner] = useState({
@@ -13,13 +16,15 @@ const FactureStandard = () => {
         prixVente: '',
         quantity: '',
     });
-
     const [panier, setPanier] = useState([]);
     const [inputchange, setInputchange] = useState('standard');
     const [openDialog, setOpenDialog] = useState(false);
     const [argentRemis, setArgentRemis] = useState('');
     const [reste, setReste] = useState('');
-    const [clientInfo, setClientInfo] = useState({ nom: '' });
+    const [clientInfo, setClientInfo] = useState({
+        nom: '',
+        adresse: '', // Ajoutez d'autres informations du client au besoin
+    });
     const [produits, setProduits] = useState([]);
 
     useEffect(() => {
@@ -60,8 +65,12 @@ const FactureStandard = () => {
             return;
         }
 
-        setPanier([...panier, factureabonner]);
-        setClientInfo({ nom: factureabonner.nom });
+        // Ajouter le clientInfo complet au panier
+        setPanier([...panier, { ...factureabonner, nom: clientInfo.nom, adresse: clientInfo.adresse }]);
+        // Ne réinitialisez le nom du client que s'il n'est pas déjà défini
+        if (!clientInfo.nom) {
+            setClientInfo({ nom: factureabonner.nom, adresse: factureabonner.adresse });
+        }
         setFactureabonner({
             nom: '',
             adresse: '',
@@ -76,10 +85,10 @@ const FactureStandard = () => {
         const total = getTotal();
         const resteAmount = parseFloat((argentRemis - total).toFixed(2));
 
-        // Enregistrer la facture dans la table factures
-        const { data: factureData, error: factureError } = await supabase.from('factures').insert([
+        const { data: transactionData, error: transactionError } = await supabase.from('transactions').insert([
             {
                 nom_client: clientInfo.nom,
+                produits: panier,
                 total: total,
                 argent_remis: argentRemis,
                 reste: resteAmount,
@@ -87,14 +96,12 @@ const FactureStandard = () => {
             }
         ]).select();
 
-        if (factureError) {
-            console.error('Error inserting invoice:', factureError);
+        if (transactionError) {
+            console.error('Error inserting transaction:', transactionError);
+            toast.error("Echec lors de la soumission !");
             return;
         }
 
-        const factureId = factureData[0].id;
-
-        // Enregistrer les lignes de facture dans la table ligne_facture
         for (const item of panier) {
             const productToUpdate = produits.find((product) => product.idproduit === item.idproduit);
             if (!productToUpdate) {
@@ -102,35 +109,16 @@ const FactureStandard = () => {
                 continue;
             }
 
-            const newStock = productToUpdate.stock - parseInt(item.quantity, 10);
+            const newStock = productToUpdate.stock - item.quantity;
             await supabase
                 .from('produit')
                 .update({ stock: newStock })
                 .eq('idproduit', item.idproduit);
-
-            await supabase.from('ligne_facture').insert([
-                {
-                    id_facture: factureId,
-                    id_produit: item.idproduit,
-                    quantite: item.quantity,
-                    prix_unitaire: item.prixVente,
-                    total: item.prixVente * item.quantity,
-                }
-            ]);
-
-            await supabase.from('ventes').insert([
-                {
-                    id_produit: item.idproduit,
-                    quantite: item.quantity,
-                    prix_unitaire: item.prixVente,
-                    total: item.prixVente * item.quantity,
-                    date_vente: new Date().toISOString(),
-                },
-            ]);
         }
 
         setPanier([]);
         setOpenDialog(false);
+        toast.success("La transaction a été enregistrée avec succès !");
     };
 
     const handleOpenDialog = () => {
@@ -153,10 +141,6 @@ const FactureStandard = () => {
         return panier.reduce((total, item) => total + (item.prixVente * item.quantity), 0).toFixed(2);
     };
 
-    const handlePrint = () => {
-        window.print();
-    };
-
     const handleProductSelect = (event) => {
         const selectedProductId = event.target.value;
         const selectedProduct = produits.find((product) => product.idproduit === selectedProductId);
@@ -170,8 +154,10 @@ const FactureStandard = () => {
         }
     };
 
+    
     return (
         <>
+            <ToastContainer />
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>Bienvenue à la caisse :</Typography>
             <Grid item sx={{ marginLeft: 50, marginTop: 2 }} >
                 <Button type="submit" variant="contained" color="inherit" onClick={handleOpenDialog}>
@@ -232,17 +218,7 @@ const FactureStandard = () => {
                                 onChange={handleInputChange}
                                 required
                             />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="adresse"
-                                label="Adresse"
-                                value={factureabonner.adresse}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Grid>
+                        </Grid>                       
                         <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase' }}>Détails produits</Typography>
                         <Grid item sx={{ marginTop: 1 }}>
                             <TextField
@@ -295,62 +271,41 @@ const FactureStandard = () => {
                     </Box>
                 </form>
             </Grid>
-            <Grid container spacing={-1}>
-                <Box
-                    sx={{
-                        display: 'grid',
-                        columnGap: 2,
-                        textAlign: 'center',
-                        rowGap: 2,
-                        gridTemplateColumns: 'repeat(3, 1fr)',
-                        marginTop: 2,
-                        borderRadius: 2,
-                        p: 2,
-                        borderColor: 'primary.main',
-                        backgroundColor: 'rgb(255 255 255)'
-                    }}
-                >
-                    <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase' }}>Panier</Typography>
-                    {panier.map((item, index) => (
-                        <Grid item key={index}>
-                            <Typography> produit: {item.designation} - {item.prixVente} x {item.quantity} = {item.prixVente * item.quantity} FC</Typography>
-                        </Grid>
-                    ))}
-                    {panier.length > 0 && (
-                        <>
-                            <Grid item >
-                                <Typography sx={{ textTransform: 'uppercase' }}>Total: {getTotal()}FC</Typography>
-                            </Grid>
-                            <Grid item >
-                                <Button variant="contained" color="primary" onClick={handleSubmit}>Soumettre le panier</Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button variant="contained" color="secondary" onClick={handlePrint}>Imprimer la facture</Button>
-                            </Grid>
-                        </>
-                    )}
-                </Box>
-            </Grid>
             <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Résumé de la Facture</DialogTitle>
+                <DialogTitle>Confirmation de l'achat</DialogTitle>
                 <DialogContent>
-                    <Typography>Nom: {clientInfo.nom}</Typography>
-                    <Typography>Total: {getTotal()} FC</Typography>
-                    <TextField
-                        label="Argent remis"
-                        type="number"
-                        fullWidth
-                        value={argentRemis}
-                        onChange={handleArgentRemisChange}
-                        sx={{ mt: 2 }}
-                    />
-                    <Typography sx={{ mt: 2 }}>Reste: {reste} FC</Typography>
+                    <Typography>Nom du client : {clientInfo.nom}</Typography>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID Produit</TableCell>
+                                <TableCell>Désignation</TableCell>
+                                <TableCell>Prix de vente</TableCell>
+                                <TableCell>Quantité</TableCell>
+                                <TableCell>Total</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {panier.map((item, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{item.idproduit}</TableCell>
+                                    <TableCell>{item.designation}</TableCell>
+                                    <TableCell>{item.prixVente}</TableCell>
+                                    <TableCell>{item.quantity}</TableCell>
+                                    <TableCell>{(item.prixVente * item.quantity).toFixed(2)}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                        <Typography>Totaux: {getTotal()} FC</Typography>
+                    </Table>
+                    <TextField label="Argent remis" value={argentRemis} onChange={handleArgentRemisChange} fullWidth sx={{ marginTop: 2 }} />
+                    <Typography sx={{ marginTop: 2 }}>Reste à rendre : {reste}</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog} color="secondary">Annuler</Button>
+                    <Button onClick={handleCloseDialog} color="primary">Annuler</Button>
                     <Button onClick={handleSubmit} color="primary">Confirmer</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>  
         </>
     );
 };

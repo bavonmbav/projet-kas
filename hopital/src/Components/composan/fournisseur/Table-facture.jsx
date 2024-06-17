@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Snackbar, Alert, Typography, Box, Button } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
-import { useReactToPrint } from 'react-to-print';
 import { orderBy } from 'lodash';
 import { supabase } from '../../../supabaseconfig';
+
 
 const Tablefacture = () => {
     const [page, setPage] = useState(0);
@@ -20,7 +21,6 @@ const Tablefacture = () => {
         severity: '',
         message: '',
     });
-    const componentRef = useRef();
 
     useEffect(() => {
         const fetchFactures = async () => {
@@ -50,9 +50,42 @@ const Tablefacture = () => {
         fetchFactures();
     }, []);
 
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    });
+    const handlePrints = (idFacture) => {
+        const factur = factures.find((facturation) => facturation.id === idFacture);
+
+        if (!factur) {
+            console.error('Facture not found:', idFacture);
+            return;
+        }
+
+        const content = ReactDOMServer.renderToStaticMarkup(
+            <Ficher fournisseur={factur.fournisseur.nom}  montant={factur.montant} avance={factur.avance}
+                datefacture={factur.datefacture}
+                dateecheance={factur.dateecheance} />
+        );
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Facture</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                        text-align : center;
+                    }
+                </style>
+            </head>
+            <body>
+                ${content}
+            
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    };
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -100,7 +133,7 @@ const Tablefacture = () => {
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}
-                    onClick={handlePrint}
+                    onClick={() => handlePrints()}
                 >
                     Imprimer
                 </Button>
@@ -120,7 +153,7 @@ const Tablefacture = () => {
                     ),
                 }}
             />
-            <TableContainer component={Paper} ref={componentRef}>
+            <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -150,7 +183,7 @@ const Tablefacture = () => {
                                 <TableCell>{facture.datefacture}</TableCell>
                                 <TableCell>{facture.dateecheance}</TableCell>
                                 <TableCell>
-                                    <IconButton aria-label="Print" onClick={handlePrint}>
+                                    <IconButton aria-label="Print" onClick={() => handlePrints(facture.id)} color='secondary'>
                                         <PrintIcon />
                                     </IconButton>
                                 </TableCell>
