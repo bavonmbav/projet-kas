@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Snackbar, Alert, Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import { Snackbar, Alert, Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -7,6 +7,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 import { orderBy } from 'lodash';
 import { supabase } from '../../../supabaseconfig';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TableFournisseur = ({ produits }) => {
     const [page, setPage] = useState(0);
@@ -69,6 +71,7 @@ const TableFournisseur = ({ produits }) => {
             console.error('Error deleting data:', error);
         } else {
             setFournisseurs(fournisseurs.filter((fournisseur) => fournisseur.id !== id));
+            toast.secondary("fournisseur supprimer !");
         }
     };
 
@@ -134,9 +137,13 @@ const TableFournisseur = ({ produits }) => {
 
     return (
         <>
+            <ToastContainer />
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                gestion des Fournisseurs
+            </Typography>
             <TableContainer component={Paper}>
                 <TextField
-                    variant="outlined"
+           s         variant="outlined"
                     label="Rechercher"
                     value={searchTerm}
                     onChange={handleSearch}

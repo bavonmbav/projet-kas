@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, CircularProgress, Backdrop, Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, CircularProgress, Backdrop, Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import { supabase } from '../../../supabaseconfig';
@@ -7,6 +7,8 @@ import LogoMarie from '../../../assets/marie.png';
 import LogoCroix from '../../../assets/croix.png';
 import PaymentIcon from '@mui/icons-material/Payment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Tablefactureclient = () => {
     const [transactions, setTransactions] = useState([]);
@@ -20,10 +22,7 @@ const Tablefactureclient = () => {
     const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
     const [paymentHistory, setPaymentHistory] = useState([]);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
+  
     const handleClose = () => {
         setOpen(false);
     };
@@ -131,15 +130,15 @@ const Tablefactureclient = () => {
             `<tr> 
                                 <td>${produit.designation}</td>
                                 <td>${produit.quantity}</td>
-                                <td>${produit.prixVente}</td>
+                                <td>${produit.prixVente} FC</td>
                             </tr>
                             `
         ).join('')}                                                              
                     </table>
                  
-            <p>Total: ${facture.total}</p>
-            <p>Argent remis: ${facture.argent_remis}</p>
-            <p>Reste: ${facture.reste}</p>
+            <p>Total: ${facture.total} FC</p>
+            <p>Argent remis: ${facture.argent_remis} FC</p>
+            <p>Reste: ${facture.reste} FC</p>
           </body> 
                     `;
 
@@ -234,6 +233,9 @@ const Tablefactureclient = () => {
 
     return (
         <>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                gestionnaire Factures Abonner
+            </Typography>
             <TableContainer component={Paper}>
                 <TextField
                     variant="outlined"

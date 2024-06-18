@@ -2,6 +2,8 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Snackbar, Alert, Typography, Box} from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Facturefournisseur = () => {
     const [fournisseurs, setFournisseurs] = useState([]);
@@ -53,6 +55,7 @@ const Facturefournisseur = () => {
                 severity: 'success',
                 message: 'facture ajoutée avec succès!',
             });
+            toast.success("La facture a été creer avec succès !");
             setFacture({
                 fournisseur_id: '',
                 montant: '',
@@ -77,6 +80,7 @@ const Facturefournisseur = () => {
 
     return (
         <>
+            <ToastContainer />
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer une facture fournisseur</Typography>
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmit}>

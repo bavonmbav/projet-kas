@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactDOMServer from 'react-dom/server';
+import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Snackbar, Alert, Typography, Box, Button } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
@@ -7,7 +6,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 import { orderBy } from 'lodash';
 import { supabase } from '../../../supabaseconfig';
-
+import LogoMarie from '../../../assets/marie.png';
+import LogoCroix from '../../../assets/croix.png';
 
 const Tablefacture = () => {
     const [page, setPage] = useState(0);
@@ -50,39 +50,170 @@ const Tablefacture = () => {
         fetchFactures();
     }, []);
 
-    const handlePrints = (idFacture) => {
-        const factur = factures.find((facturation) => facturation.id === idFacture);
+    const handlePrints = (transaction) => {
+        const facture = factures.find((facture) => facture.id === transaction);
+        const formatDate = (date) => {
+            const d = new Date(date);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0'); // Les mois sont de 0 à 11
+            const year = d.getFullYear();
+            return `${day}${month}${year}`;
+        };
+        const content = `
+                                <style>
+                                body {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    text-align: center;
+                                }
+                                hr {
+                                    width: 80%;
+                                }
+                                table {
+                                    margin: 20px 0;
+                                }
+                        th, td {
+                                padding: 8px;
+                            }
+                        div{
+                            display: flex;
+                        }
 
-        if (!factur) {
-            console.error('Facture not found:', idFacture);
-            return;
-        }
-
-        const content = ReactDOMServer.renderToStaticMarkup(
-            <Ficher fournisseur={factur.fournisseur.nom}  montant={factur.montant} avance={factur.avance}
-                datefacture={factur.datefacture}
-                dateecheance={factur.dateecheance} />
-        );
-        const printWindow = window.open("", "_blank");
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Facture</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
+                    span{
+                        display: flex;
                         margin: 20px;
-                        text-align : center;
                     }
-                </style>
-            </head>
+                        h6{
+                        padding: 8px;
+                        }
+                    </style>
+                 <body>
+                 <div>
+                 <img
+                    src=${LogoMarie}
+                         width="60px", height="auto" />
+                            <p>
+                                REPUBLIQUE DEMOCRATIQUE DU CONGO <br />
+                                PROVINCE : HAUT-KATANGA <br />
+                                ZONE DE SANTE : SAKANIA <br />
+                                CENTRE MEDICAL : NOTRE DAME DE LOURDES AV. DON BOSCO <br />
+                                N°08 NEW KOYO/KASUMBALESA <br />
+                               
+                            </p>
+                          <img
+                                src=${LogoCroix}
+                                width="60px", height="auto" />
+                    </div>
+                     DIOCESE DE SAKANIA KIPUSHI
+                       
+                    <p> Bon de sortie  N° ${facture.id}${formatDate(facture.datefacture)}</p>
+                     <p>Date de Vente: ${new Date(facture.datefacture).toLocaleDateString()}
+                    </p>
+                    <hr/>
+                    <p>Nom: ${facture.fournisseur.nom}</p>
+                    <table>
+                        <tr>
+                            <th>Montant</th>
+                            <th>Avance</th>
+                        </tr>
+                        <tr> 
+                                <td>${facture.montant} FC</td>
+                                <td>${facture.avance} FC</td>
+                            </tr>
+                            
+                                                                 
+                    </table>
+                    <span>
+                    <h6>Signature du responsable</h6>
+                    <h6>Nom & Signature du fournisseur <br/>
+                    ${facture.fournisseur.nom}</h6>
+                    </span>
+          </body> 
+                    `;
+
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.print();
+    };
+
+    const handlePrintTable = () => {
+        const visibleFactures = sortedFactures.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+        const content = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+                     div{
+                            display: flex;
+                        }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+            </style>
             <body>
-                ${content}
-            
+            <div>
+                 <img
+                    src=${LogoMarie}
+                         width="60px", height="auto" />
+                            <p>
+                                REPUBLIQUE DEMOCRATIQUE DU CONGO <br />
+                                PROVINCE : HAUT-KATANGA <br />
+                                ZONE DE SANTE : SAKANIA <br />
+                                CENTRE MEDICAL : NOTRE DAME DE LOURDES AV. DON BOSCO <br />
+                                N°08 NEW KOYO/KASUMBALESA <br />
+                               
+                            </p>
+                          <img
+                                src=${LogoCroix}
+                                width="60px", height="auto" />
+                    </div>
+                <h1>Tableaux Factures</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Montant</th>
+                            <th>Avance</th>
+                            <th>Date de Facture</th>
+                            <th>Date d'Échéance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${visibleFactures.map(facture => `
+                            <tr key=${facture.id}>
+                                <td>${facture.id}</td>
+                                <td>${facture.fournisseur.nom}</td>
+                                <td>${facture.montant}</td>
+                                <td>${facture.avance}</td>
+                                <td>${new Date(facture.datefacture).toLocaleDateString()}</td>
+                                <td>${new Date(facture.dateecheance).toLocaleDateString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             </body>
-            </html>
-        `);
+        `;
+
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(content);
         printWindow.document.close();
         printWindow.print();
     };
@@ -125,15 +256,16 @@ const Tablefacture = () => {
 
     return (
         <>
-            <Box sx={{ textAlign: 'center', marginBottom: 3 }}>
-                <Typography variant="h4" component="h2" gutterBottom>
-                    Factures Fournisseur
+            <Box sx={{ textAlign: 'center' }}>
+                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                   gestionnaire Factures Fournisseur
                 </Typography>
+                
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<PrintIcon />}
-                    onClick={() => handlePrints()}
+                    onClick={handlePrintTable}
                 >
                     Imprimer
                 </Button>

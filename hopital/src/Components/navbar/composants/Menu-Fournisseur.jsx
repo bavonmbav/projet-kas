@@ -34,14 +34,14 @@ const MenuFournisseur = () => {
                 <ListItem>
                     <ListItemButton>
                         <ListItemContent>
-                            <NavLink to={"/TableFournisseur"} style={styles.list}>Table</NavLink>
+                            <NavLink to={"/TableFournisseur"} style={styles.list}>Table-FRN</NavLink>
                         </ListItemContent>
                     </ListItemButton>
                 </ListItem>
                 <ListItem>
                     <ListItemButton>
                         <ListItemContent>
-                            <NavLink to={"/Tablefacture"} style={styles.list}>Facture F</NavLink>
+                            <NavLink to={"/Tablefacture"} style={styles.list}>Facture-FRN</NavLink>
                         </ListItemContent>
                     </ListItemButton>
                 </ListItem>

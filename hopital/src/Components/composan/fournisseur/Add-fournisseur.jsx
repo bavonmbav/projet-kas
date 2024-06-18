@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Grid, Snackbar, Alert, Typography } from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Fournisseur = () => {
     const [nom, setNom] = useState('');
@@ -32,6 +34,7 @@ const Fournisseur = () => {
             setNom('');
             setAdresse('');
             setTelephone('');
+            toast.success("Nouveau fournisseur a été enregistrée avec succès !");
         }
     };
 
@@ -71,6 +74,7 @@ const Fournisseur = () => {
 
     return (
         <>
+            <ToastContainer />
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer un fournisseur</Typography>
 
             <Grid container spacing={-1}>

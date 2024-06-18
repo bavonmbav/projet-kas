@@ -33,14 +33,14 @@ const Menuproduit = () => {
                 <ListItem>
                     <ListItemButton>
                         <ListItemContent>
-                            <NavLink to={"/Tablecommande"} style={styles.list}>commande</NavLink>
+                            <NavLink to={"/Tablecommande"} style={styles.list}>Table-CMD</NavLink>
                         </ListItemContent>
                     </ListItemButton>
                 </ListItem>
                 <ListItem>
                     <ListItemButton>
                         <ListItemContent>
-                            <NavLink to={"/Tablehistorique"} style={styles.list}>Reapprovisionnement</NavLink>
+                            <NavLink to={"/Tablehistorique"} style={styles.list}>Historique</NavLink>
                         </ListItemContent>
                     </ListItemButton>
                 </ListItem>

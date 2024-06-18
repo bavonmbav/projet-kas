@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -8,6 +8,7 @@ import { orderBy } from 'lodash';
 import { supabase } from '../../../supabaseconfig';
 import LogoMarie from '../../../assets/marie.png';
 import LogoCroix from '../../../assets/croix.png';
+
 
 const Tablefactureclient = () => {
     const [factures, setFactures] = useState([]);
@@ -126,15 +127,15 @@ const Tablefactureclient = () => {
             `<tr> 
                                 <td>${produit.designation}</td>
                                 <td>${produit.quantity}</td>
-                                <td>${produit.prixVente}</td>
+                                <td>${produit.prixVente} FC</td>
                             </tr>
                             `
         ).join('')}                                                              
                     </table>
                  
-            <p>Total: ${facture.total}</p>
-            <p>Argent remis: ${facture.argent_remis}</p>
-            <p>Reste: ${facture.reste}</p>
+            <p>Total: ${facture.total} FC</p>
+            <p>Argent remis: ${facture.argent_remis} FC</p>
+            <p>Reste: ${facture.reste} FC</p>
           </body> 
                     `;
 
@@ -146,6 +147,10 @@ const Tablefactureclient = () => {
     };
 
     return (
+        <>
+        <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                   gestionnaire Factures payant cache
+                </Typography>
         <TableContainer component={Paper}>
             <TextField
                 variant="outlined"
@@ -209,6 +214,7 @@ const Tablefactureclient = () => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </TableContainer>
+        </>
     );
 };
 

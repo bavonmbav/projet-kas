@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip, Snackbar, Alert } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip, Snackbar, Alert, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
 import { BusAlert } from '@mui/icons-material';
 import { supabase } from '../../../supabaseconfig';
 import { orderBy } from 'lodash';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Tablehistorique = () => {
     const [page, setPage] = useState(0);
@@ -13,7 +15,6 @@ const Tablehistorique = () => {
     const [orderByField, setOrderByField] = useState('');
     const [order, setOrder] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
-    const [productList, setProductList] = useState([]);
     const [editProduct, setEditProduct] = useState(null);
     const [open, setOpen] = useState(false);
     const [fournisseurs, setFournisseurs] = useState([]);
@@ -51,6 +52,8 @@ const Tablehistorique = () => {
         };
         fetchFactures();
     }, []);
+
+
 
     const handleSort = (field) => {
         if (orderByField === field) {
@@ -94,6 +97,7 @@ const Tablehistorique = () => {
                     severity: 'success',
                     message: 'Commande sauvegardée avec succès!',
                 });
+            toast.success("La commande a été enregistrée avec succès !");
             if (error) {
                 throw error;
             }  
@@ -105,6 +109,7 @@ const Tablehistorique = () => {
                 severity: 'error',
                 message: 'Erreur lors de la sauvegarde de la commande!',
             });
+            toast.error("echec de connexion !");
         }
     };
 
@@ -134,6 +139,10 @@ const Tablehistorique = () => {
 
     return (
         <div>
+            <ToastContainer />
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                gestion des commandes
+            </Typography>
             <TableContainer component={Paper}>
                 <TextField
                     variant="outlined"
@@ -240,6 +249,8 @@ const Tablehistorique = () => {
                     {alertState.message}
                 </Alert>
             </Snackbar>
+
+            
 
         </div>
     );

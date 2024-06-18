@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Typography, Snackbar, Alert } from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Addmedicament = () => {
     const [formState, setFormState] = useState({
@@ -70,6 +72,8 @@ const Addmedicament = () => {
                 dateExpiration: '',
                 fournisseur_id: '',
             });
+
+            toast.success("Le produit a été enregistrée avec succès !");
         }
     };
 
@@ -82,6 +86,7 @@ const Addmedicament = () => {
 
     return (
         <>
+            <ToastContainer />
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>ajoute un produit</Typography>
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmit}>
