@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Snackbar, Alert, Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography } from '@mui/material';
+import { Snackbar, Alert, Table, TableBody, TableCell, Grid, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Typography, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -141,23 +141,23 @@ const TableFournisseur = ({ produits }) => {
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
                 gestion des Fournisseurs
             </Typography>
-            <TableContainer component={Paper}>
-                <TextField
-           s         variant="outlined"
-                    label="Rechercher"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-                <Table>
+            <TextField
+                variant="outlined"
+                label="Rechercher"
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}> 
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
@@ -182,28 +182,34 @@ const TableFournisseur = ({ produits }) => {
                                 <TableCell>{fournisseur.adresse}</TableCell>
                                 <TableCell>{fournisseur.telephone}</TableCell>
                                 <TableCell>
-                                    <IconButton aria-label="Edit" onClick={() => handleOpen(fournisseur)} color='primary'>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.id)} color='error'>
-                                        <DeleteIcon />
-                                    </IconButton>
+                                    <Tooltip title="Modifier">
+                                        <IconButton aria-label="Edit" onClick={() => handleOpen(fournisseur)} color='primary'>
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                  
+                                    <Tooltip title="supprimer">
+                                        <IconButton aria-label="Delete" onClick={() => handleDelete(fournisseur.id)} color='error'>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                   
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={produits ? produits.length : fournisseurs.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+                
             </TableContainer>
-
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={produits ? produits.length : fournisseurs.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             {currentFournisseur && (
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Modifier Fournisseur</DialogTitle>

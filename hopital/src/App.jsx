@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
       <Box sx={{ backgroundColor: 'rgb(237 242 243)', }} >
         <PrimarySearchAppBar />
-        <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        <Box sx={{ display: 'flex', flexGrow: 1, position:'fixe' }}>
           <Navbar />
           <Box
             sx={{
@@ -28,7 +28,6 @@ function App() {
             }}>
               <NavigatorInput />
             </Box>
-
           </Box>
         </Box>
       </Box>

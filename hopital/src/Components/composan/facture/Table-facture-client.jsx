@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Typography, Tooltip } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -8,6 +8,7 @@ import { orderBy } from 'lodash';
 import { supabase } from '../../../supabaseconfig';
 import LogoMarie from '../../../assets/marie.png';
 import LogoCroix from '../../../assets/croix.png';
+import QRCode from 'qrcode';
 
 
 const Tablefactureclient = () => {
@@ -17,7 +18,7 @@ const Tablefactureclient = () => {
     const [orderByField, setOrderByField] = useState('');
     const [order, setOrder] = useState('asc');
     const [searchTerm, setSearchTerm] = useState('');
-    
+
 
 
     useEffect(() => {
@@ -62,7 +63,7 @@ const Tablefactureclient = () => {
     };
 
 
-    const handlePrint = (transaction) => {
+    const handlePrint = async (transaction) => {
         const facture = factures.find((facture) => facture.id === transaction);
         const formatDate = (date) => {
             const d = new Date(date);
@@ -71,6 +72,8 @@ const Tablefactureclient = () => {
             const year = d.getFullYear();
             return `${day}${month}${year}`;
         };
+        const qrCodeData = `https://127.0.0.1:5173/verify?factureId=${facture.id}`;
+        const qrCodeUrl = await QRCode.toDataURL(qrCodeData);
         const content = `
                                 <style>
                                 body {
@@ -113,7 +116,9 @@ const Tablefactureclient = () => {
                        
                     <p> Facture de la pharmacie  N° ${facture.id}${formatDate(facture.date_vente)}</p>
                      <p>Date de Vente: ${new Date(facture.date_vente).toLocaleDateString()}
+                     <img class="qr-code" src="${qrCodeUrl}" alt="QR Code" />
                     </p>
+                     
                     <hr/>
                     <p>Nom: ${facture.nom_client}</p>
                     <table>
@@ -136,6 +141,7 @@ const Tablefactureclient = () => {
             <p>Total: ${facture.total} FC</p>
             <p>Argent remis: ${facture.argent_remis} FC</p>
             <p>Reste: ${facture.reste} FC</p>
+           
           </body> 
                     `;
 
@@ -148,10 +154,9 @@ const Tablefactureclient = () => {
 
     return (
         <>
-        <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
-                   gestionnaire Factures payant cache
-                </Typography>
-        <TableContainer component={Paper}>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                gestionnaire Factures payant cache
+            </Typography>
             <TextField
                 variant="outlined"
                 label="Rechercher"
@@ -165,45 +170,51 @@ const Tablefactureclient = () => {
                             </IconButton>
                         </InputAdornment>
                     ),
-                }} sx={{ m: 3 }}
+                }} sx={{ m: 1 }}
             />
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>ID</TableCell>
-                        <TableCell>
-                            <IconButton onClick={() => handleSort('total')}>
-                                Montant
-                                {orderByField === 'total' && (
-                                    order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
-                                )}
-                            </IconButton>
-                        </TableCell>
-                        <TableCell>Nom du client</TableCell>
-                        <TableCell>Argent remis</TableCell>
-                        <TableCell>Reste</TableCell>
-                        <TableCell>Date de Vente</TableCell>
-                        <TableCell>Action</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedFactures.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((facture) => (
-                        <TableRow key={facture.id}>
-                            <TableCell>{facture.id}</TableCell>
-                            <TableCell>{facture.total}</TableCell>
-                            <TableCell>{facture.nom_client}</TableCell>
-                            <TableCell>{facture.argent_remis}</TableCell>
-                            <TableCell>{facture.reste}</TableCell>
-                            <TableCell>{new Date(facture.date_vente).toLocaleDateString()}</TableCell>
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
                             <TableCell>
-                                <IconButton aria-label="Print" onClick={() => handlePrint(facture.id)} color='secondary'> 
-                                    <PrintIcon />
+                                <IconButton onClick={() => handleSort('total')}>
+                                    Montant
+                                    {orderByField === 'total' && (
+                                        order === 'asc' ? <ArrowUpwardIcon /> : <ArrowDownwardIcon />
+                                    )}
                                 </IconButton>
                             </TableCell>
+                            <TableCell>Nom du client</TableCell>
+                            <TableCell>Argent remis</TableCell>
+                            <TableCell>Reste</TableCell>
+                            <TableCell>Date de Vente</TableCell>
+                            <TableCell>Action</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableHead>
+                    <TableBody>
+                        {sortedFactures.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((facture) => (
+                            <TableRow key={facture.id}>
+                                <TableCell>{facture.id}</TableCell>
+                                <TableCell>{facture.total}</TableCell>
+                                <TableCell>{facture.nom_client}</TableCell>
+                                <TableCell>{facture.argent_remis}</TableCell>
+                                <TableCell>{facture.reste}</TableCell>
+                                <TableCell>{new Date(facture.date_vente).toLocaleDateString()}</TableCell>
+                                <TableCell>
+                                    <Tooltip title="Imprimer">
+                                        <IconButton aria-label="Print" onClick={() => handlePrint(facture.id)} color='secondary'>
+                                            <PrintIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+
+            </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -213,7 +224,6 @@ const Tablefactureclient = () => {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
-        </TableContainer>
         </>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip, Snackbar, Alert, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogActions, DialogContent, DialogTitle, Button, Chip, Snackbar, Alert, Typography, Tooltip } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import SearchIcon from '@mui/icons-material/Search';
@@ -91,16 +91,16 @@ const Tablehistorique = () => {
                 .from('commande')
                 .insert([
                     { produit_id: editProduct.id, quantity: editProduct.quantity, fournisseur_id: editProduct.fournisseur_id }
-                ]); 
-                setAlertState({
-                    open: true,
-                    severity: 'success',
-                    message: 'Commande sauvegardée avec succès!',
-                });
+                ]);
+            setAlertState({
+                open: true,
+                severity: 'success',
+                message: 'Commande sauvegardée avec succès!',
+            });
             toast.success("La commande a été enregistrée avec succès !");
             if (error) {
                 throw error;
-            }  
+            }
             handleClose();
         } catch (error) {
             console.error('Error inserting data:', error);
@@ -143,23 +143,23 @@ const Tablehistorique = () => {
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
                 gestion des commandes
             </Typography>
-            <TableContainer component={Paper}>
-                <TextField
-                    variant="outlined"
-                    label="Rechercher"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }} sx={{ m: 3 }}
-                />
-                <Table>
+            <TextField
+                variant="outlined"
+                label="Rechercher"
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }} sx={{ m: 1 }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID Produit</TableCell>
@@ -188,25 +188,28 @@ const Tablehistorique = () => {
                                 <TableCell>{produit.prixAchat}</TableCell>
                                 <TableCell>{getStatut(produit)}</TableCell>
                                 <TableCell>
-                                    <IconButton aria-label="commande" onClick={() => handleEdit(produit)} color="primary">
-                                        <BusAlert />
-                                    </IconButton>
+                                    <Tooltip title="Passer commande">
+                                        <IconButton aria-label="commande" onClick={() => handleEdit(produit)} color="primary">
+                                            <BusAlert />
+                                        </IconButton>
+                                    </Tooltip>
+                                  
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={fournisseurs.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </TableContainer>
 
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={fournisseurs.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             {editProduct && (
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Commander</DialogTitle>
@@ -250,7 +253,7 @@ const Tablehistorique = () => {
                 </Alert>
             </Snackbar>
 
-            
+
 
         </div>
     );

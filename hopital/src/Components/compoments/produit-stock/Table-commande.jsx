@@ -366,23 +366,23 @@ const Tablecommande = () => {
             >
                 Imprimer
             </Button>
-            <TableContainer component={Paper}>
-                <TextField
-                    variant="outlined"
-                    label="Rechercher"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }} sx={{ m: 3 }}
-                />
-                <Table>
+            <TextField
+                variant="outlined"
+                label="Rechercher"
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }} sx={{ m: 1 }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID Produit</TableCell>
@@ -434,17 +434,17 @@ const Tablecommande = () => {
                         ))}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={fournisseurs.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </TableContainer>
 
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={fournisseurs.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
                 <DialogTitle>Modifier la commande</DialogTitle>
                 <DialogContent>

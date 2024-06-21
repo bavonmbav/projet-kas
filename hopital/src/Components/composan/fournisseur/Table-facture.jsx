@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Snackbar, Alert, Typography, Box, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Snackbar, Alert, Typography, Box, Button, Tooltip } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PrintIcon from '@mui/icons-material/Print';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -285,8 +285,8 @@ const Tablefacture = () => {
                     ),
                 }}
             />
-            <TableContainer component={Paper}>
-                <Table>
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
@@ -315,9 +315,12 @@ const Tablefacture = () => {
                                 <TableCell>{facture.datefacture}</TableCell>
                                 <TableCell>{facture.dateecheance}</TableCell>
                                 <TableCell>
-                                    <IconButton aria-label="Print" onClick={() => handlePrints(facture.id)} color='secondary'>
-                                        <PrintIcon />
-                                    </IconButton>
+                                    <Tooltip title="Imprimer">
+                                        <IconButton aria-label="Print" onClick={() => handlePrints(facture.id)} color='secondary'>
+                                            <PrintIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                   
                                 </TableCell>
                             </TableRow>
                         ))}

@@ -7,7 +7,7 @@ import TableFournisseur from "../composan/fournisseur/Table-fournisseur";
 import Tablefactureclient from "../composan/facture/Table-facture-client";
 import TablefactureAbonner from "../composan/facture/Table-facture-abonner";
 import Tablefacture from "../composan/fournisseur/Table-facture";
-
+import VerifyFacture from "../composan/facture/Verify-facture";
 const Navigator = () => {
 
     return (
@@ -20,6 +20,7 @@ const Navigator = () => {
             <Route path="Tablefactureclient" element={<Tablefactureclient />} />
             <Route path="TablefactureAbonner" element={<TablefactureAbonner />} />
             <Route path="Tablefacture" element={<Tablefacture />} />
+            <Route path="/verify" element={<VerifyFacture />} />
         </Routes>
     )
 }

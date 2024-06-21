@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, CircularProgress, Backdrop, Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, CircularProgress, Backdrop, Dialog, DialogActions, DialogContent, DialogTitle, Button, List, ListItem, ListItemText, Typography, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import { supabase } from '../../../supabaseconfig';
@@ -9,6 +9,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import QRCode from 'qrcode';
 
 const Tablefactureclient = () => {
     const [transactions, setTransactions] = useState([]);
@@ -22,7 +23,7 @@ const Tablefactureclient = () => {
     const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
     const [paymentHistory, setPaymentHistory] = useState([]);
 
-  
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -63,7 +64,7 @@ const Tablefactureclient = () => {
         setPage(0);
     };
 
-    const handlePrint = (transaction) => {
+    const handlePrint = async(transaction) => {
         const facture = transactions.find((facture) => facture.id === transaction);
         const formatDate = (date) => {
             const d = new Date(date);
@@ -72,6 +73,8 @@ const Tablefactureclient = () => {
             const year = d.getFullYear();
             return `${day}${month}${year}`;
         };
+        const qrCodeData = `https://127.0.0.1:5173/TablefactureAbonner/${facture.id} ${formatDate(facture.date_vente)} ${facture.total} ${facture.nom_client} ${facture.adresse}`;
+        const qrCodeUrl = await QRCode.toDataURL(qrCodeData);
         const content = `
                                 <style>
                                 body {
@@ -114,6 +117,7 @@ const Tablefactureclient = () => {
                        
                     <p> Facture de la pharmacie  N° ${facture.id}${formatDate(facture.date_vente)}</p>
                      <p>Date de Vente: ${new Date(facture.date_vente).toLocaleDateString()}
+                      <img class="qr-code" src="${qrCodeUrl}" alt="QR Code" />
                     </p>
                     <hr/>
                     <p>Nom: ${facture.nom_client}</p>
@@ -236,23 +240,23 @@ const Tablefactureclient = () => {
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
                 gestionnaire Factures Abonner
             </Typography>
-            <TableContainer component={Paper}>
-                <TextField
-                    variant="outlined"
-                    label="Rechercher"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }} sx={{ m: 3 }}
-                />
-                <Table>
+            <TextField
+                variant="outlined"
+                label="Rechercher"
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }} sx={{ m: 1 }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
@@ -278,34 +282,42 @@ const Tablefactureclient = () => {
                                 <TableCell>{transaction.reste}</TableCell>
                                 <TableCell>{new Date(transaction.date_vente).toLocaleDateString()}</TableCell>
                                 <TableCell>
-                                    <IconButton onClick={() => handlePrint(transaction.id)} color='secondary'>
-                                        <PrintIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleConfirm(transaction.id)} color='warning'>
-                                        <PaymentIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleViewHistory(transaction.id)} color='success'>
-                                        <VisibilityIcon />
-                                    </IconButton>
+                                   
+                                    <Tooltip title="Imprimer">
+                                        <IconButton onClick={() => handlePrint(transaction.id)} color='secondary'>
+                                            <PrintIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Solder">
+                                        <IconButton onClick={() => handleConfirm(transaction.id)} color='warning'>
+                                            <PaymentIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    
+                                      <Tooltip title="Detail">
+                                        <IconButton onClick={() => handleViewHistory(transaction.id)} color='success'>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                      </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={transactions.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+
                 <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
                     <CircularProgress color="inherit" />
                 </Backdrop>
             </TableContainer>
-
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={transactions.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Entrer le montant payé</DialogTitle>
                 <DialogContent>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, TextField, InputAdornment, Dialog, DialogTitle, DialogContent, List, ListItem, ListItemText, Button, DialogActions, Tooltip, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -53,10 +52,23 @@ const ProduitsTable = ({ produits }) => {
                 });
             } else {
                 setFournisseurs(data);
+                checkExpiredProducts(data);
             }
         };
         fetchFactures();
     }, []);
+
+    const checkExpiredProducts = (products) => {
+        const today = new Date().toISOString().split('T')[0];
+        const expiredProducts = products.filter(product => product.dateExpiration <= today);
+        if (expiredProducts.length > 0) {
+            setAlertState({
+                open: true,
+                severity: 'warning',
+                message: `Attention ! ${expiredProducts.length} produit(s) ont atteint leur date d'expiration.`,
+            });
+        }
+    };
 
     const handleSort = (field) => {
         if (orderByField === field) {
@@ -72,12 +84,10 @@ const ProduitsTable = ({ produits }) => {
         setPage(0); // Reset page when searching
     };
 
-    // Fonction pour filtrer les produits en fonction du terme de recherche
     const filteredProduits = fournisseurs ? fournisseurs.filter(produit =>
         produit.designation.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
 
-    // Trie les produits filtrés
     const sortedProduits = orderBy(filteredProduits, orderByField, order);
 
     const handleChangePage = (event, newPage) => {
@@ -166,30 +176,40 @@ const ProduitsTable = ({ produits }) => {
         setCurrentProduct({ ...currentProduct, [name]: value });
     };
 
+    const isExpired = (date) => {
+        const today = new Date().toISOString().split('T')[0];
+        return date <= today;
+    };
+
     return (
         <>
             <ToastContainer />
+            {alertState.open && (
+                <Typography sx={{ textAlign: 'center', marginBottom: 2, color: alertState.severity === 'warning' ? 'orange' : 'red' }}>
+                    {alertState.message}
+                </Typography>
+            )}
             <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
-               gestionnaire des produits
+                gestionnaire des produits
             </Typography>
-            <TableContainer component={Paper}>
-                <TextField
-                    variant="outlined"
-                    label="Rechercher"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton>
-                                    <SearchIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                    }} sx={{ m: 3 }}
-                />
-                <Table>
-                    <TableHead>
+            <TextField
+                variant="outlined"
+                label="Rechercher"
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton>
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    ),
+                }} sx={{ m: 1 }}
+            />
+            <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+                <Table stickyHeader>
+                    <TableHead >
                         <TableRow>
                             <TableCell>ID Produit</TableCell>
                             <TableCell>
@@ -211,7 +231,7 @@ const ProduitsTable = ({ produits }) => {
                     </TableHead>
                     <TableBody>
                         {sortedProduits.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((produit) => (
-                            <TableRow key={produit.idproduit}>
+                            <TableRow key={produit.idproduit} style={{ backgroundColor: isExpired(produit.dateExpiration) ? 'rgba(255, 0, 0, 0.1)' : 'inherit' }}>
                                 <TableCell>{produit.idproduit}</TableCell>
                                 <TableCell>{produit.designation}</TableCell>
                                 <TableCell>{produit.stock}</TableCell>
@@ -222,12 +242,12 @@ const ProduitsTable = ({ produits }) => {
                                 <TableCell>{produit.dateExpiration}</TableCell>
                                 <TableCell>
                                     <Tooltip title="View">
-                                        <IconButton aria-label="View" color="info" onClick={() => handleViewHistory(produit.idproduit)}>
+                                        <IconButton aria-label="View" color="info" onClick={() => handleViewHistory(produit.idproduit)} disabled={isExpired(produit.dateExpiration)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title="Edit">
-                                        <IconButton aria-label="Edit" color="success" onClick={() => handleEdit(produit)}>
+                                        <IconButton aria-label="Edit" color="success" onClick={() => handleEdit(produit)} disabled={isExpired(produit.dateExpiration)}>
                                             <EditIcon />
                                         </IconButton>
                                     </Tooltip>
@@ -236,17 +256,16 @@ const ProduitsTable = ({ produits }) => {
                         ))}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={produits ? produits.length : fournisseurs.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
             </TableContainer>
-
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={produits ? produits.length : fournisseurs.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             <Dialog open={historyDialogOpen} onClose={handleCloseHistoryDialog}>
                 <DialogTitle>Historique des produit</DialogTitle>
                 <DialogContent>
@@ -279,6 +298,16 @@ const ProduitsTable = ({ produits }) => {
                         fullWidth
                         variant="standard"
                         value={currentProduct?.designation || ''}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="stock"
+                        label="Stock"
+                        type="number"
+                        fullWidth
+                        variant="standard"
+                        value={currentProduct?.stock || ''}
                         onChange={handleInputChange}
                     />
                     <TextField
