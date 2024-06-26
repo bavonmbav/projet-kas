@@ -25,8 +25,8 @@ const Navbar = () => {
     return (
 
 
-        <Box sx={{ width: 200, height: '100vh', backgroundColor: 'rgb(118 196 255 / 93%)', borderRight: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', }} >
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ backgroundColor: 'rgb(118 196 255 / 93%)', marginTop: 1 }}>
+        <Box sx={{ width: 200, height: '100vh', backgroundColor: '#fff', borderRight: '1px solid', borderColor: 'divider', display: 'flex', flexDirection: 'column', }} >
+            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ backgroundColor: '#fff', marginTop: 1 }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -34,7 +34,7 @@ const Navbar = () => {
                 >
 
                     <LocalPharmacy />
-                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: 'rgb(255 255 255 / 93%)' }}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>
                         Produits
                     </Typography>
 
@@ -45,7 +45,7 @@ const Navbar = () => {
                     <Menuproduit />
                 </AccordionDetails>
             </Accordion>
-            <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ backgroundColor: 'rgb(118 196 255 / 93%)', }}>
+            <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ backgroundColor: '#fff', }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -53,7 +53,7 @@ const Navbar = () => {
                 >
 
                     <PeopleOutlined />
-                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: 'rgb(255 255 255 / 93%)' }}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>
                         Fournisseur
                     </Typography>
 
@@ -63,7 +63,7 @@ const Navbar = () => {
                 </AccordionDetails>
             </Accordion>
 
-            <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} sx={{ backgroundColor: 'rgb(118 196 255 / 93%)', }}>
+            <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} sx={{ backgroundColor: '#fff', }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -71,7 +71,7 @@ const Navbar = () => {
                 >
 
                     <Book />
-                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: 'rgb(255 255 255 / 93%)' }}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>
                         Facture
                     </Typography>
 
@@ -81,7 +81,7 @@ const Navbar = () => {
                 </AccordionDetails>
             </Accordion>
 
-            <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} sx={{ backgroundColor: 'rgb(118 196 255 / 93%)', }}>
+            <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')} sx={{ backgroundColor: '#fff', }}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1bh-content"
@@ -90,7 +90,7 @@ const Navbar = () => {
                 >
 
                     <Balance />
-                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: 'rgb(255 255 255 / 93%)' }}>
+                    <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>
                         vente
                     </Typography>
 
@@ -102,7 +102,7 @@ const Navbar = () => {
 
             <IconButton aria-label="Logout" color="success" sx={{ marginTop: 18 }} >
                 <Logout />
-                <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: 'rgb(255 255 255 / 93%)' }}>Retour</Typography>
+                <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>Retour</Typography>
 
             </IconButton>
 
