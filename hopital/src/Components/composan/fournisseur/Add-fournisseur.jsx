@@ -73,9 +73,9 @@ const Fournisseur = () => {
     };
 
     return (
-        <>
+        <Box sx={{ marginLeft: 20 }}>
             <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>creer un fournisseur</Typography>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>creer un fournisseur</Typography>
 
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmits}>
@@ -147,7 +147,7 @@ const Fournisseur = () => {
                     {alertState.message}
                 </Alert>
             </Snackbar>
-        </>
+        </Box >
     );
 };
 

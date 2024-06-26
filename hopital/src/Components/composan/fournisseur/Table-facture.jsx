@@ -257,7 +257,7 @@ const Tablefacture = () => {
     return (
         <>
             <Box sx={{ textAlign: 'center' }}>
-                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 20, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }} variant="h4" component="h2" gutterBottom>
+                <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }} variant="h4" component="h2" gutterBottom>
                    gestionnaire Factures Fournisseur
                 </Typography>
                 

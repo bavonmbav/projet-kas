@@ -156,9 +156,9 @@ const FactureStandard = () => {
 
     
     return (
-        <>
+        <Box sx={{ marginLeft: 20 }}>
             <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>Bienvenue à la caisse :</Typography>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 3, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>Bienvenue à la caisse :</Typography>
             <Grid item sx={{ marginLeft: 50, marginTop: 2 }} >
                 <Button type="submit" variant="contained" color="inherit" onClick={handleOpenDialog}>
                     <Badge badgeContent={panier.length} color="secondary">
@@ -306,7 +306,7 @@ const FactureStandard = () => {
                     <Button onClick={handleSubmit} color="primary">Confirmer</Button>
                 </DialogActions>
             </Dialog>  
-        </>
+        </Box>
     );
 };
 

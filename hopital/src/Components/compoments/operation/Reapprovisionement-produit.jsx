@@ -101,8 +101,9 @@ const Reapprovision = () => {
     };
 
     return (
-        <>
-            <Typography sx={{ textTransform: "uppercase", textAlign: "center", marginRight: 30, borderRadius: 3, backgroundColor: "rgb(255 255 255)" }}>Reapprovisionner</Typography>
+
+        <Box sx={{ marginLeft: 20 }}>
+            <Typography sx={{ textTransform: "uppercase", textAlign: "center", marginRight: 3, borderRadius: 3, backgroundColor: "rgb(255 255 255)", mt:2}}>Reapprovisionner</Typography>
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmit}>
                     <Box
@@ -170,7 +171,7 @@ const Reapprovision = () => {
                     {alertState.message}
                 </Alert>
             </Snackbar>
-        </>
+        </Box>
     );
 };
 

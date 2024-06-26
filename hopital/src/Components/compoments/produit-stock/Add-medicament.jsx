@@ -85,9 +85,10 @@ const Addmedicament = () => {
     };
 
     return (
-        <>
+
+        <Box sx={{ marginLeft: 30 }}>
             <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 30, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' }}>ajoute un produit</Typography>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 32, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>ajoute un produit</Typography>
             <Grid container spacing={-1}>
                 <form onSubmit={handleSubmit}>
                     <Box
@@ -196,7 +197,7 @@ const Addmedicament = () => {
                     {alertState.message}
                 </Alert>
             </Snackbar>
-        </>
+        </Box>
     );
 }
 
