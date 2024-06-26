@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Grid, Snackbar, Alert, Typography } from '@mui/material';
+import { Box, TextField, Button, Grid, Snackbar, Alert, Typography, Container, Paper } from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -73,80 +73,61 @@ const Fournisseur = () => {
     };
 
     return (
-        <Box sx={{ marginLeft: 20 }}>
-            <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>creer un fournisseur</Typography>
-
-            <Grid container spacing={-1}>
-                <form onSubmit={handleSubmits}>
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            columnGap: 3,
-                            textAlign: 'center',
-                            rowGap: 3,
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            marginTop: 2,
-                            borderRadius: 2,
-                            p: 2,
-                            borderColor: 'primary.main',
-                            backgroundColor: 'rgb(255 255 255)'
-                        }}
+        <Box >
+            <Container>
+                <Paper sx={{ p: 2, mt: 1 }}>
+                    <ToastContainer />
+                    <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', mt: 2 }}>creer un fournisseur</Typography>
+                    <form onSubmit={handleSubmits}>
+                        <TextField
+                            fullWidth
+                            name="nom"
+                            label="Nom ou société"
+                            variant="outlined"
+                            sx={{ mb: 2 }} 
+                            value={nom}
+                            onChange={(e) => setNom(e.target.value)}
+                            error={!!errors.nom}
+                            helperText={errors.nom}
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            name="adresse"
+                            label="Adresse"
+                            variant="outlined"
+                            sx={{ mb: 2 }} 
+                            value={adresse}
+                            onChange={(e) => setAdresse(e.target.value)}
+                            error={!!errors.adresse}
+                            helperText={errors.adresse}
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            name="telephone"
+                            label="Contact"
+                            variant="outlined"
+                            sx={{ mb: 2 }} 
+                            value={telephone}
+                            onChange={handleInputChange}
+                            error={!!errors.telephone}
+                            helperText={errors.telephone}
+                            required
+                        />
+                        <Button type="submit" variant="contained"  color="primary">Soumettre</Button>
+                    </form>
+                    <Snackbar
+                        open={alertState.open}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
                     >
-
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="nom"
-                                label="Nom ou société"
-                                value={nom}
-                                onChange={(e) => setNom(e.target.value)}
-                                error={!!errors.nom}
-                                helperText={errors.nom}
-                                required
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="adresse"
-                                label="Adresse"
-                                value={adresse}
-                                onChange={(e) => setAdresse(e.target.value)}
-
-                                error={!!errors.adresse}
-                                helperText={errors.adresse}
-                                required
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="telephone"
-                                label="Contact"
-                                value={telephone}
-                                onChange={handleInputChange}
-                                error={!!errors.telephone}
-                                helperText={errors.telephone}
-                                required
-                            />
-                        </Grid>
-                        <Grid item >
-                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                        </Grid>
-
-                    </Box>
-                </form>
-            </Grid>
-            <Snackbar
-                open={alertState.open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-            >
-                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
-                    {alertState.message}
-                </Alert>
-            </Snackbar>
+                        <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                            {alertState.message}
+                        </Alert>
+                    </Snackbar>
+                </Paper>
+            </Container>
         </Box >
     );
 };

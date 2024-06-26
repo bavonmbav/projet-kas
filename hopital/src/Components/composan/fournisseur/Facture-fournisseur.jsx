@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from 'react';
-import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Snackbar, Alert, Typography, Box} from '@mui/material';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Snackbar, Alert, Typography, Box, Container, Paper } from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -66,7 +66,7 @@ const Facturefournisseur = () => {
         }
     };
 
-  const handleInputChange = (e) => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFacture({ ...facture, [name]: value });
     };
@@ -79,104 +79,89 @@ const Facturefournisseur = () => {
     };
 
     return (
-        <Box sx={{ marginLeft: 20 }}>
-            <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)' , mt:2}}>creer une facture fournisseur</Typography>
-            <Grid container spacing={-1}>
-                <form onSubmit={handleSubmit}>
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            columnGap: 3,
-                            textAlign: 'center',
-                            rowGap: 3,
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            marginTop: 2,
-                            borderRadius: 2,
-                            p: 2,
-                            borderColor: 'primary.main',
-                            backgroundColor: 'rgb(255 255 255)'
-                        }}
+        
+            <Container>
+                <Paper sx={{ p: 2, mt: 1 }}>
+                    <ToastContainer />
+                    <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', mt: 2 }}>creer une facture fournisseur</Typography>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Montant"
+                            name="montant"
+                            type="number"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={facture.montant}
+                            onChange={handleInputChange}
+                        />
+                        <FormControl fullWidth>
+                            <InputLabel id="idFournisseurLabel">Fournisseur</InputLabel>
+                            <Select
+                                labelId="idFournisseurLabel"
+                                id="fournisseur"
+                                name="fournisseur_id"
+                                variant="outlined"
+                                sx={{ mb: 2 }}
+                                value={facture.fournisseur_id}
+                                onChange={handleInputChange}
+                                label="Fournisseur"
+                            >
+                                {fournisseurs.map((fournisseur) => (
+                                    <MenuItem key={fournisseur.id} value={fournisseur.id}>
+                                        {fournisseur.nom}
+                                    </MenuItem>
+                                ))}
+                                {/* <MenuItem value='5'>Ten</MenuItem> */}
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            fullWidth
+                            label="Avance"
+                            name="avance"
+                            type="number"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={facture.avance}
+                            onChange={handleInputChange}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Date de Facture"
+                            name="datefacture"
+                            type="date"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            InputLabelProps={{ shrink: true }}
+                            value={facture.datefacture}
+                            onChange={handleInputChange}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Date d'Échéance"
+                            name="dateecheance"
+                            type="date"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            InputLabelProps={{ shrink: true }}
+                            value={facture.dateecheance}
+                            onChange={handleInputChange}
+                        />
+                        <Button type="submit" variant="contained"  color="primary">Soumettre</Button>
+                    </form>
+                    <Snackbar
+                        open={alertState.open}
+                        autoHideDuration={6000}
+                        onClose={handleClose}
                     >
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Montant"
-                                name="montant"
-                                type="number"
-                                value={facture.montant}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <FormControl fullWidth>
-                                <InputLabel id="idFournisseurLabel">Fournisseur</InputLabel>
-                                <Select
-                                    labelId="idFournisseurLabel"
-                                    id="fournisseur"
-                                    name="fournisseur_id"
-                                    value={facture.fournisseur_id}
-                                    onChange={handleInputChange}
-                                    label="Fournisseur"
-                                >
-                                    {fournisseurs.map((fournisseur) => (
-                                        <MenuItem key={fournisseur.id} value={fournisseur.id}>
-                                            {fournisseur.nom}
-                                        </MenuItem>
-                                    ))}
+                        <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                            {alertState.message}
+                        </Alert>
+                    </Snackbar>
+                </Paper>
+            </Container>
 
-                                    {/* <MenuItem value='5'>Ten</MenuItem> */}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Avance"
-                                name="avance"
-                                type="number"
-                                value={facture.avance}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Date de Facture"
-                                name="datefacture"
-                                type="date"
-                                InputLabelProps={{ shrink: true }}
-                                value={facture.datefacture}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                label="Date d'Échéance"
-                                name="dateecheance"
-                                type="date"
-                                InputLabelProps={{ shrink: true }}
-                                value={facture.dateecheance}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                        </Grid>
-                    </Box>
-                </form>
-            </Grid>
-            <Snackbar
-                open={alertState.open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-            >
-                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
-                    {alertState.message}
-                </Alert>
-            </Snackbar>
-        </Box>
+      
     );
 }
 

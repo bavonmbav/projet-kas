@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Grid, Box, Typography, MenuItem, Snackbar, Alert } from "@mui/material";
+import { TextField, Button, Grid, Box, Typography, MenuItem, Snackbar, Alert, Container, Paper } from "@mui/material";
 import { supabase } from '../../../supabaseconfig';
 
 const Reapprovision = () => {
@@ -102,76 +102,60 @@ const Reapprovision = () => {
 
     return (
 
-        <Box sx={{ marginLeft: 20 }}>
-            <Typography sx={{ textTransform: "uppercase", textAlign: "center", marginRight: 3, borderRadius: 3, backgroundColor: "rgb(255 255 255)", mt:2}}>Reapprovisionner</Typography>
-            <Grid container spacing={-1}>
+
+        <Container>
+            <Paper sx={{ p: 2, mt: 1 }}>
+                <Typography sx={{ textTransform: "uppercase", textAlign: "center", mt: 2 }}>Reapprovisionner</Typography>
                 <form onSubmit={handleSubmit}>
-                    <Box
-                        sx={{
-                            display: "grid",
-                            columnGap: 3,
-                            textAlign: "center",
-                            rowGap: 3,
-                            gridTemplateColumns: "repeat(2, 1fr)",
-                            marginTop: 2,
-                            borderRadius: 2,
-                            p: 2,
-                            borderColor: "primary.main",
-                            backgroundColor: "rgb(255 255 255)"
-                        }}
+                    <TextField
+                        select
+                        fullWidth
+                        name="ID"
+                        label="ID"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.ID}
+                        onChange={handleInputChange}
                     >
-                        <Grid item>
-                            <TextField
-                                select
-                                fullWidth
-                                name="ID"
-                                label="ID"
-                                value={formState.ID}
-                                onChange={handleInputChange}
-                            >
-                                {produits.map((produit) => (
-                                    <MenuItem key={produit.id} value={produit.idproduit}>
-                                        {produit.idproduit}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="Designation"
-                                label="Designation"
-                                value={formState.Designation}
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="Quantity"
-                                label="Quantity"
-                                value={formState.Quantity}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button type="submit" variant="contained" color="primary">
-                                Soumettre
-                            </Button>
-                        </Grid>
-                    </Box>
+                        {produits.map((produit) => (
+                            <MenuItem key={produit.id} value={produit.idproduit}>
+                                {produit.idproduit}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        fullWidth
+                        name="Designation"
+                        label="Designation"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.Designation}
+                        disabled
+                    />
+                    <TextField
+                        fullWidth
+                        name="Quantity"
+                        label="Quantity"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.Quantity}
+                        onChange={handleInputChange}
+                    />
+                    <Button type="submit"  variant="contained" color="primary">
+                        Soumettre
+                    </Button>
                 </form>
-            </Grid>
-            <Snackbar
-                open={alertState.open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-            >
-                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
-                    {alertState.message}
-                </Alert>
-            </Snackbar>
-        </Box>
+                <Snackbar
+                    open={alertState.open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                >
+                    <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                        {alertState.message}
+                    </Alert>
+                </Snackbar>
+            </Paper>
+        </Container>
     );
 };
 

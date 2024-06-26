@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Grid, Badge, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, TextField, Button, Typography, Grid, Badge, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Table, TableHead, TableRow, TableCell, TableBody, Container, Paper } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { ShoppingCart } from '@mui/icons-material';
 import { supabase } from '../../../supabaseconfig';
@@ -154,158 +154,141 @@ const FactureStandard = () => {
         }
     };
 
-    
+
     return (
-        <Box sx={{ marginLeft: 20 }}>
-            <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 3, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>Bienvenue à la caisse :</Typography>
-            <Grid item sx={{ marginLeft: 50, marginTop: 2 }} >
-                <Button type="submit" variant="contained" color="inherit" onClick={handleOpenDialog}>
-                    <Badge badgeContent={panier.length} color="secondary">
-                        <ShoppingCart />
-                    </Badge>
-                    Panier client
-                </Button>
-            </Grid>
-            <Grid container spacing={-1} sx={{ marginRight: 8, marginBottom: 4 }}>
-                <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase', marginRight: 2 }}>Sélectionner le client :</Typography>
-                <label>
-                    <NavLink to={'/FactureStandard'} style={{ textDecoration: "none", color: 'black' }}>
-                        Standard
-                        <input
-                            value="standard"
-                            checked={inputchange === 'standard'}
-                            onChange={handleChangeInput}
-                            type='radio'
-                        />
-                    </NavLink>
-                </label>
-                <label>
-                    <NavLink to={'/FactureAbonner'} style={{ textDecoration: "none", color: 'black' }}>
-                        Abonner
-                        <input
-                            value="abonner"
-                            checked={inputchange === 'abonner'}
-                            onChange={handleChangeInput}
-                            type='radio'
-                        />
-                    </NavLink>
-                </label>
-            </Grid>
-            <Grid container spacing={-1}>
-                <form onSubmit={handleAddToCart}>
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            columnGap: 2,
-                            textAlign: 'center',
-                            rowGap: 4,
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            marginTop: 2,
-                            borderRadius: 2,
-                            p: 2,
-                            borderColor: 'primary.main',
-                            backgroundColor: 'rgb(255 255 255)'
-                        }}
-                    >
+        <Box>
+            <Container>
+                <Paper sx={{ p: 2, mt: 1 }}>
+                    <ToastContainer />
+                    <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', mt: 2 }}>Bienvenue à la caisse :</Typography>
+                    <Button type="submit" variant="contained" sx={{ ml: 90 }} color="inherit" onClick={handleOpenDialog}>
+                        <Badge badgeContent={panier.length} color="secondary">
+                            <ShoppingCart />
+                        </Badge>
+                        Panier client
+                    </Button>
+                    <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase', marginRight: 2 }}>Sélectionner le client :</Typography>
+                    <label>
+                        <NavLink to={'/FactureStandard'} style={{ textDecoration: "none", color: 'black' }}>
+                            Standard
+                            <input
+                                value="standard"
+                                checked={inputchange === 'standard'}
+                                onChange={handleChangeInput}
+                                type='radio'
+                            />
+                        </NavLink>
+                    </label>
+                    <label>
+                        <NavLink to={'/FactureAbonner'} style={{ textDecoration: "none", color: 'black' }}>
+                            Abonner
+                            <input
+                                value="abonner"
+                                checked={inputchange === 'abonner'}
+                                onChange={handleChangeInput}
+                                type='radio'
+                            />
+                        </NavLink>
+                    </label>
+                    <form onSubmit={handleAddToCart}>
                         <Typography sx={{ color: "rgb(229 6830)", textTransform: 'uppercase' }}>Détails client</Typography>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="nom"
-                                label="Nom de l'abonné"
-                                value={factureabonner.nom}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Grid>                       
+                        <TextField
+                            fullWidth
+                            name="nom"
+                            label="Nom de l'abonné"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={factureabonner.nom}
+                            onChange={handleInputChange}
+                            required
+                        />
                         <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase' }}>Détails produits</Typography>
-                        <Grid item sx={{ marginTop: 1 }}>
-                            <TextField
-                                select
-                                fullWidth
-                                name="idproduit"
-                                label="ID Produit"
-                                value={factureabonner.idproduit}
-                                onChange={handleProductSelect}
-                                required
-                            >
-                                {produits.map((produit) => (
-                                    <MenuItem key={produit.idproduit} value={produit.idproduit}>
-                                        {produit.idproduit}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="designation"
-                                label="Désignation"
-                                value={factureabonner.designation}
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="prix"
-                                label="Prix de vente"
-                                value={factureabonner.prixVente}
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="quantity"
-                                label="Quantité"
-                                value={factureabonner.quantity}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button type="submit" variant="contained" color="primary">Ajouter au panier</Button>
-                        </Grid>
-                    </Box>
-                </form>
-            </Grid>
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>Confirmation de l'achat</DialogTitle>
-                <DialogContent>
-                    <Typography>Nom du client : {clientInfo.nom}</Typography>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID Produit</TableCell>
-                                <TableCell>Désignation</TableCell>
-                                <TableCell>Prix de vente</TableCell>
-                                <TableCell>Quantité</TableCell>
-                                <TableCell>Total</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {panier.map((item, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{item.idproduit}</TableCell>
-                                    <TableCell>{item.designation}</TableCell>
-                                    <TableCell>{item.prixVente}</TableCell>
-                                    <TableCell>{item.quantity}</TableCell>
-                                    <TableCell>{(item.prixVente * item.quantity).toFixed(2)}</TableCell>
-                                </TableRow>
+                        <TextField
+                            select
+                            fullWidth
+                            name="idproduit"
+                            label="ID Produit"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={factureabonner.idproduit}
+                            onChange={handleProductSelect}
+                            required
+                        >
+                            {produits.map((produit) => (
+                                <MenuItem key={produit.idproduit} value={produit.idproduit}>
+                                    {produit.idproduit}
+                                </MenuItem>
                             ))}
-                        </TableBody>
-                        <Typography>Totaux: {getTotal()} FC</Typography>
-                    </Table>
-                    <TextField label="Argent remis" value={argentRemis} onChange={handleArgentRemisChange} fullWidth sx={{ marginTop: 2 }} />
-                    <Typography sx={{ marginTop: 2 }}>Reste à rendre : {reste}</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">Annuler</Button>
-                    <Button onClick={handleSubmit} color="primary">Confirmer</Button>
-                </DialogActions>
-            </Dialog>  
+                        </TextField>
+                        <TextField
+                            fullWidth
+                            name="designation"
+                            label="Désignation"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={factureabonner.designation}
+                            disabled
+                        />
+                        <TextField
+                            fullWidth
+                            name="prix"
+                            label="Prix de vente"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={factureabonner.prixVente}
+                            disabled
+                        />
+                        <TextField
+                            fullWidth
+                            name="quantity"
+                            label="Quantité"
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                            value={factureabonner.quantity}
+                            onChange={handleInputChange}
+                            required
+                        />
+                        <Button type="submit" variant="contained" color="primary">Ajouter au panier</Button>
+                    </form>
+
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                        <DialogTitle>Confirmation de l'achat</DialogTitle>
+                        <DialogContent>
+                            <Typography>Nom du client : {clientInfo.nom}</Typography>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>ID Produit</TableCell>
+                                        <TableCell>Désignation</TableCell>
+                                        <TableCell>Prix de vente</TableCell>
+                                        <TableCell>Quantité</TableCell>
+                                        <TableCell>Total</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {panier.map((item, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{item.idproduit}</TableCell>
+                                            <TableCell>{item.designation}</TableCell>
+                                            <TableCell>{item.prixVente}</TableCell>
+                                            <TableCell>{item.quantity}</TableCell>
+                                            <TableCell>{(item.prixVente * item.quantity).toFixed(2)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                <Typography>Totaux: {getTotal()} FC</Typography>
+                            </Table>
+                            <TextField label="Argent remis" value={argentRemis} onChange={handleArgentRemisChange} fullWidth sx={{ marginTop: 2 }} />
+                            <Typography sx={{ marginTop: 2 }}>Reste à rendre : {reste}</Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseDialog} color="primary">Annuler</Button>
+                            <Button onClick={handleSubmit} color="primary">Confirmer</Button>
+                        </DialogActions>
+                    </Dialog>
+                </Paper>
+            </Container>
+
         </Box>
     );
 };

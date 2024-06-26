@@ -23,7 +23,7 @@ const Dashboard = () => {
                     <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer}>
                         <MenuIcons />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="animated-text">
                         Notre dames de lourdes
                     </Typography>
                     <PrimarySearchAppBar/>

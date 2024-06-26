@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Typography, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Grid, Typography, Snackbar, Alert, Container, Paper } from '@mui/material';
 import { supabase } from '../../../supabaseconfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+// import { motion } from 'framer-motion';
+import '../../../assets/TextAnimation.css'
 const Addmedicament = () => {
     const [formState, setFormState] = useState({
         prixAchat: '',
@@ -86,118 +87,110 @@ const Addmedicament = () => {
 
     return (
 
-        <Box sx={{ marginLeft: 30 }}>
+        <Container>
             <ToastContainer />
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginRight: 32, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }}>ajoute un produit</Typography>
-            <Grid container spacing={-1}>
+            <Paper sx={{ p: 2, mt: 1 }}>
+                <Typography sx={{ textTransform: 'uppercase', borderRadius: 3,textAlign:'center',  mt: 1 }} className="animated-text">ajoute un produit</Typography>
+              
                 <form onSubmit={handleSubmit}>
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            columnGap: 3,
-                            textAlign: 'center',
-                            rowGap: 3,
-                            gridTemplateColumns: 'repeat(2, 1fr)',
-                            marginTop: 2,
-                            borderRadius: 2,
-                            p: 2,
-                            borderColor: 'primary.main',
-                            backgroundColor: 'rgb(255 255 255)'
-                        }}
-                    >
-                        <Grid item>
-                            <TextField
-                                fullWidth
-                                name="prixAchat"
-                                label="Prix d'achat"
-                                value={formState.prixAchat}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="idproduit"
-                                label="ID Produit"
-                                value={formState.idproduit}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="designation"
-                                label="Désignation"
-                                value={formState.designation}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="prixVente"
-                                label="Prix de vente"
-                                value={formState.prixVente}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="stockMini"
-                                label="Stock minimum"
-                                value={formState.stockMini}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <TextField
-                                fullWidth
-                                name="dateExpiration"
-                                label="Date d'expiration"
-                                type="date"
-                                value={formState.dateExpiration}
-                                InputLabelProps={{ shrink: true }}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                        <Grid item >
-                            <FormControl fullWidth>
-                                <InputLabel id="fournisseur_idLabel">Fournisseur</InputLabel>
-                                <Select
-                                    labelId="fournisseur_idLabel"
-                                    name="fournisseur_id"
-                                    value={formState.fournisseur_id || ''}
-                                    onChange={handleInputChange}
-                                    label="Fournisseur"
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    {fournisseurs.map((fournisseur) => (
-                                        <MenuItem key={fournisseur.id} value={fournisseur.id}>
-                                            {fournisseur.nom}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button type="submit" variant="contained" color="primary">Soumettre</Button>
-                        </Grid>
-                    </Box>
+                    <TextField
+                        fullWidth
+                        name="prixAchat"
+                        label="Prix d'achat"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.prixAchat}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        fullWidth
+                        name="idproduit"
+                        label="ID Produit"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.idproduit}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        fullWidth
+                        name="designation"
+                        label="Désignation"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.designation}
+                        onChange={handleInputChange}
+                    />
+                    <TextField
+                        fullWidth
+                        name="prixVente"
+                        label="Prix de vente"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.prixVente}
+                        onChange={handleInputChange}
+                    />
+
+
+                    <TextField
+                        fullWidth
+                        name="stockMini"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        label="Stock minimum"
+                        value={formState.stockMini}
+                        onChange={handleInputChange}
+                    />
+
+
+                    <TextField
+                        fullWidth
+                        name="dateExpiration"
+                        label="Date d'expiration"
+                        type="date"
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                        value={formState.dateExpiration}
+                        InputLabelProps={{ shrink: true }}
+                        onChange={handleInputChange}
+                    />
+
+
+                    <FormControl fullWidth
+                        variant="outlined"
+                        sx={{ mb: 2 }}>
+                        <InputLabel id="fournisseur_idLabel">Fournisseur</InputLabel>
+                        <Select
+                            labelId="fournisseur_idLabel"
+                            name="fournisseur_id"
+                            value={formState.fournisseur_id || ''}
+                            onChange={handleInputChange}
+                            label="Fournisseur"
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            {fournisseurs.map((fournisseur) => (
+                                <MenuItem key={fournisseur.id} value={fournisseur.id}>
+                                    {fournisseur.nom}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <Button type="submit" variant="contained" color="primary">Soumettre</Button>
                 </form>
-            </Grid>
-            <Snackbar
-                open={alertState.open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-            >
-                <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
-                    {alertState.message}
-                </Alert>
-            </Snackbar>
-        </Box>
+
+                <Snackbar
+                    open={alertState.open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                >
+                    <Alert onClose={handleClose} severity={alertState.severity} sx={{ width: '100%' }}>
+                        {alertState.message}
+                    </Alert>
+                </Snackbar>
+            </Paper>
+
+        </Container>
     );
 }
 

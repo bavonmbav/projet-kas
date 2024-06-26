@@ -1,0 +1,14 @@
+@keyframes moveLeftToRight {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(20%);
+    }
+}
+
+.animated-text {
+    animation: moveLeftToRight 8s linear infinite;
+    /* Animation continue pendant 5 secondes */
+}
