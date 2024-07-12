@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Grid, Box, Typography, MenuItem, Snackbar, Alert, Container, Paper } from "@mui/material";
+import { TextField, Button, Typography, MenuItem, Snackbar, Alert, Container, Paper } from "@mui/material";
 import { supabase } from '../../../supabaseconfig';
 
 const Reapprovision = () => {
@@ -7,10 +7,10 @@ const Reapprovision = () => {
         ID: "",
         Designation: "",
         Quantity: "",
+        CurrentStock: 0, // Ajoutez un état pour stocker la quantité de stock actuelle
     });
 
     const [produits, setProduits] = useState([]);
-
     const [alertState, setAlertState] = useState({
         open: false,
         severity: '',
@@ -24,11 +24,10 @@ const Reapprovision = () => {
         setAlertState({ ...alertState, open: false });
     };
 
-
     useEffect(() => {
         const fetchProduits = async () => {
             try {
-                const { data, error } = await supabase.from("produit").select("idproduit, designation");
+                const { data, error } = await supabase.from("produit").select("idproduit, designation, stock");
                 if (error) {
                     console.error("Error fetching data:", error);
                 } else {
@@ -49,26 +48,24 @@ const Reapprovision = () => {
     useEffect(() => {
         const selectedProduit = produits.find((produit) => produit.idproduit === formState.ID);
         if (selectedProduit) {
-            setFormState((prevState) => ({ ...prevState, Designation: selectedProduit.designation }));
+            setFormState((prevState) => ({
+                ...prevState,
+                Designation: selectedProduit.designation,
+                CurrentStock: selectedProduit.stock || 0, // Mettez à jour l'état du stock actuel
+            }));
         }
     }, [formState.ID, produits]);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const produitToUpdate = produits.find((produit) => produit.idproduit === formState.ID);
-            if (!produitToUpdate) {
-                console.error("Produit introuvable");
-                return;
-            }
-
             const quantity = parseInt(formState.Quantity, 10);
             if (isNaN(quantity)) {
                 console.error("La quantité saisie n'est pas valide");
                 return;
             }
 
-            const currentStock = produitToUpdate.stock || 0; // Utilisez 0 si le stock est null ou undefined
-            const newStock = currentStock + quantity;
+            const newStock = formState.CurrentStock + quantity;
 
             const { data, error } = await supabase
                 .from("produit")
@@ -80,19 +77,20 @@ const Reapprovision = () => {
                 setAlertState({
                     open: true,
                     severity: 'error',
-                    message: 'Error updating stock:',
+                    message: 'Erreur lors de la mise à jour du stock',
                 });
             } else {
-                console.log("Stock updated successfully:", data);
+                console.log("Stock mis à jour avec succès:", data);
                 setAlertState({
                     open: true,
                     severity: 'success',
-                    message: 'Stock updated successfully',
+                    message: 'Stock mis à jour avec succès',
                 });
                 setFormState({
                     ID: "",
                     Designation: "",
                     Quantity: "",
+                    CurrentStock: 0, // Réinitialisez l'état du stock actuel
                 });
             }
         } catch (error) {
@@ -101,11 +99,9 @@ const Reapprovision = () => {
     };
 
     return (
-
-
         <Container>
             <Paper sx={{ p: 2, mt: 1 }}>
-                <Typography sx={{ textTransform: "uppercase", textAlign: "center", mt: 2 }}>Reapprovisionner</Typography>
+                <Typography sx={{ textTransform: "uppercase", textAlign: "center", mt: 2 }}>Réapprovisionner</Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
                         select
@@ -118,7 +114,7 @@ const Reapprovision = () => {
                         onChange={handleInputChange}
                     >
                         {produits.map((produit) => (
-                            <MenuItem key={produit.id} value={produit.idproduit}>
+                            <MenuItem key={produit.idproduit} value={produit.idproduit}>
                                 {produit.idproduit}
                             </MenuItem>
                         ))}
@@ -141,7 +137,7 @@ const Reapprovision = () => {
                         value={formState.Quantity}
                         onChange={handleInputChange}
                     />
-                    <Button type="submit"  variant="contained" color="primary">
+                    <Button type="submit" variant="contained" color="primary">
                         Soumettre
                     </Button>
                 </form>

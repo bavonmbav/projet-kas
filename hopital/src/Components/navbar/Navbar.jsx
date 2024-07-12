@@ -11,7 +11,18 @@ import MenuFacture from "./composants/Menu-facture";
 import MenuOperation from "./composants/Menu-Operation";
 import { Book, PeopleOutlined, LocalPharmacy, Balance, Logout } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
+import { NavLink } from "react-router-dom";
 
+
+const styles = {
+    list: {
+        padding: "auto",
+        textDecoration: "none",
+        display: "block",
+        textAlign: "left",
+        color: "black"
+    }
+}
 
 const Navbar = () => {
 
@@ -102,7 +113,10 @@ const Navbar = () => {
 
             <IconButton aria-label="Logout" color="success" sx={{ marginTop: 18 }} >
                 <Logout />
-                <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>Retour</Typography>
+                <Typography sx={{ width: '33%', flexShrink: 0, textTransform: 'uppercase', color: '#000' }}>
+                    <NavLink to={"/"} style={styles.list}>Retour</NavLink>
+                </Typography>
+
 
             </IconButton>
 

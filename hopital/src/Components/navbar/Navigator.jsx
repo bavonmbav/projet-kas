@@ -8,11 +8,13 @@ import Tablefactureclient from "../composan/facture/Table-facture-client";
 import TablefactureAbonner from "../composan/facture/Table-facture-abonner";
 import Tablefacture from "../composan/fournisseur/Table-facture";
 import VerifyFacture from "../composan/facture/Verify-facture";
+import Dashboard from "./composants/Graphique";
 const Navigator = () => {
 
     return (
 
         <Routes >
+            <Route exact path="/" element={<Dashboard />}/>
             <Route path="ProduitsTable" element={<ProduitsTable />} />
             <Route path="Tablecommande" element={<Tablecommande />} />
             <Route path="Tablehistorique" element={<Tablehistorique />} />

@@ -24,7 +24,7 @@ const Dashboard = () => {
                         <MenuIcons />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="animated-text">
-                        Notre dames de lourdes
+                        Centre Médical Notre Dame de Lourdes
                     </Typography>
                     <PrimarySearchAppBar/>
                 </Toolbar>

@@ -5,6 +5,7 @@ import NavigatorInput from './Components/navbar/NavigatorInput';
 import PrimarySearchAppBar from './Components/popup/Dialog-commande';
 import { BrowserRouter} from 'react-router-dom';
 import Home from './pages/Home';
+import SalesHistory from './pages/Historique ';
 function App() {
   return (
     <BrowserRouter>

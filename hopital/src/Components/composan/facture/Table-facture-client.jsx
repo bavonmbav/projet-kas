@@ -72,7 +72,8 @@ const Tablefactureclient = () => {
             const year = d.getFullYear();
             return `${day}${month}${year}`;
         };
-        const qrCodeData = `https://127.0.0.1:5173/verify?factureId=${facture.id}`;
+        const qrCodeData = `CENTRE MEDICAL : NOTRE DAME DE LOURDES
+         N° ${facture.id}${formatDate(facture.date_vente)}  nom: ${facture.nom_client} valider`;
         const qrCodeUrl = await QRCode.toDataURL(qrCodeData);
         const content = `
                                 <style>

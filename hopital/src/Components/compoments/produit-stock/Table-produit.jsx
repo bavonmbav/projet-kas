@@ -53,6 +53,7 @@ const ProduitsTable = ({ produits }) => {
             } else {
                 setFournisseurs(data);
                 checkExpiredProducts(data);
+                checkExpiringSoonProducts(data);
             }
         };
         fetchFactures();
@@ -66,6 +67,23 @@ const ProduitsTable = ({ produits }) => {
                 open: true,
                 severity: 'warning',
                 message: `Attention ! ${expiredProducts.length} produit(s) ont atteint leur date d'expiration.`,
+            });
+        }
+    };
+
+    const checkExpiringSoonProducts = (products) => {
+        const today = new Date();
+        const oneMonthLater = new Date();
+        oneMonthLater.setMonth(today.getMonth() + 1);
+
+        const expiringSoonProducts = products.filter(product => {
+            const expirationDate = new Date(product.dateExpiration);
+            return expirationDate > today && expirationDate <= oneMonthLater;
+        });
+
+        if (expiringSoonProducts.length > 0) {
+            expiringSoonProducts.forEach(product => {
+                toast.warning(`Attention ! Le produit "${product.designation}" va expirer le ${product.dateExpiration}.`);
             });
         }
     };
@@ -159,7 +177,7 @@ const ProduitsTable = ({ produits }) => {
                 );
                 setFournisseurs(updatedFournisseurs);
                 handleCloseEditDialog();
-                toast.success("Le produit a été mise a jour avec succès !");
+                toast.success("Le produit a été mis à jour avec succès !");
             }
         } catch (error) {
             console.error('Erreur lors de la mise à jour du produit:', error.message);
@@ -189,7 +207,7 @@ const ProduitsTable = ({ produits }) => {
                     {alertState.message}
                 </Typography>
             )}
-            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt:2 }} variant="h4" component="h2" gutterBottom>
+            <Typography sx={{ textTransform: 'uppercase', textAlign: 'center', marginLeft: 2, borderRadius: 3, backgroundColor: 'rgb(255 255 255)', mt: 2 }} variant="h4" component="h2" gutterBottom>
                 gestionnaire des produits
             </Typography>
             <TextField
