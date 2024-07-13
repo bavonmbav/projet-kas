@@ -30,7 +30,7 @@ const FactureAbonner = () => {
     useEffect(() => {
         const fetchProduits = async () => {
             try {
-                const { data, error } = await supabase.from('produit').select('idproduit, designation, prixVente , stock');
+                const { data, error } = await supabase.from('produit').select('idproduit, designation, prixVente, stock, dateExpiration');
                 if (error) {
                     console.error('Error fetching products:', error);
                 } else {
@@ -49,6 +49,13 @@ const FactureAbonner = () => {
         const productToAdd = produits.find((product) => product.idproduit === factureabonner.idproduit);
         if (!productToAdd) {
             console.error("Produit introuvable");
+            return;
+        }
+        const currentDate = new Date();
+        const expirationDate = new Date(productToAdd.dateExpiration);
+
+        if (expirationDate < currentDate) {
+            toast.error("Le produit est expiré et ne peut pas être vendu.");
             return;
         }
 

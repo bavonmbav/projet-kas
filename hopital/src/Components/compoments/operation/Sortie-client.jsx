@@ -6,7 +6,6 @@ import { supabase } from '../../../supabaseconfig';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const FactureStandard = () => {
     const [factureabonner, setFactureabonner] = useState({
         nom: '',
@@ -23,14 +22,14 @@ const FactureStandard = () => {
     const [reste, setReste] = useState('');
     const [clientInfo, setClientInfo] = useState({
         nom: '',
-        adresse: '', // Ajoutez d'autres informations du client au besoin
+        adresse: '',
     });
     const [produits, setProduits] = useState([]);
 
     useEffect(() => {
         const fetchProduits = async () => {
             try {
-                const { data, error } = await supabase.from('produit').select('idproduit, designation, prixVente , stock');
+                const { data, error } = await supabase.from('produit').select('idproduit, designation, prixVente, stock, dateExpiration');
                 if (error) {
                     console.error('Error fetching products:', error);
                 } else {
@@ -60,14 +59,20 @@ const FactureStandard = () => {
             return;
         }
 
-        if (parseInt(factureabonner.quantity) > productToAdd.stock) {
-            alert("Stock insuffisant. La quantité demandée n'est pas disponible en stock.");
+        const currentDate = new Date();
+        const expirationDate = new Date(productToAdd.dateExpiration);
+
+        if (expirationDate < currentDate) {
+            toast.error("Le produit est expiré et ne peut pas être vendu.");
             return;
         }
 
-        // Ajouter le clientInfo complet au panier
+        if (parseInt(factureabonner.quantity) > productToAdd.stock) {
+            toast.error("Stock insuffisant. La quantité demandée n'est pas disponible en stock.");
+            return;
+        }
+
         setPanier([...panier, { ...factureabonner, nom: clientInfo.nom, adresse: clientInfo.adresse }]);
-        // Ne réinitialisez le nom du client que s'il n'est pas déjà défini
         if (!clientInfo.nom) {
             setClientInfo({ nom: factureabonner.nom, adresse: factureabonner.adresse });
         }
@@ -154,7 +159,6 @@ const FactureStandard = () => {
         }
     };
 
-
     return (
         <Box>
             <Container>
@@ -191,7 +195,7 @@ const FactureStandard = () => {
                         </NavLink>
                     </label>
                     <form onSubmit={handleAddToCart}>
-                        <Typography sx={{ color: "rgb(229 6830)", textTransform: 'uppercase' }}>Détails client</Typography>
+                        <Typography sx={{ color: "rgb(229 68 30)", textTransform: 'uppercase' }}>Détails client</Typography>
                         <TextField
                             fullWidth
                             name="nom"
@@ -231,7 +235,7 @@ const FactureStandard = () => {
                         />
                         <TextField
                             fullWidth
-                            name="prix"
+                            name="prixVente"
                             label="Prix de vente"
                             variant="outlined"
                             sx={{ mb: 2 }}
@@ -288,7 +292,6 @@ const FactureStandard = () => {
                     </Dialog>
                 </Paper>
             </Container>
-
         </Box>
     );
 };
